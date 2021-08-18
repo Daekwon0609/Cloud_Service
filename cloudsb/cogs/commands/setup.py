@@ -10,6 +10,7 @@ from discord_slash.context import MenuContext
 
 from utils.db import connect_db
 from utils.cn import change_name
+from utils.json import load_j
 
 from discord.ext import commands
 
@@ -19,7 +20,7 @@ class setupa(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name="setup",
+        name="설정",
         description="고객센터 시스템을 설정합니다.",
         default_permission=False,
         options=[
@@ -45,15 +46,15 @@ class setupa(commands.Cog):
             ),
             create_option(
                 name="category",
-                description="카테고리를 선택해주세요.",
+                description="설정할 카테고리의 이름을 작성하거나, 선택해주세요. (ex. #카테고리 이름)",
                 option_type=7,
                 required=True
             )
         ],
         permissions={
-            855722532107059221: [
+            load_j['sub_guild']: [
                 create_permission(
-                    id=867443948585746452,
+                    id=load_j['setup_role'],
                     id_type=SlashCommandPermissionType.ROLE,
                     permission=True
                 )
@@ -64,24 +65,26 @@ class setupa(commands.Cog):
         if str(category.type) != "category":
             return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
 
+        category = self.bot.get_channel(id=category.id)
+
         cur = await connect_db()
 
         await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))  
 
         categories = change_name(categories)
 
-        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"바꾼 카테고리 종류: **[{categories}]**\n바꾼 카테고리 아이디: **{category.id}**\n\n`/setup_info` 로 전체 확인이 가능합니다.")
+        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/setup_info` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 카테고리 아이디: **{category.id}**")
         
-        await ctx.send(embed=setup_emb)
+        await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
     @cog_ext.cog_slash(
-        name="setup_info",
-        description="설정된 카테고리를 보여줍니다.",
+        name="정보",
+        description="고객센터 봇의 설정된 정보를 볼 수 있습니다.",
         default_permission=False,
         permissions={
-            855722532107059221: [
+            load_j['sub_guild']: [
                 create_permission(
-                    id=867443948585746452,
+                    id=load_j['setup_role'],
                     id_type=SlashCommandPermissionType.ROLE,
                     permission=True
                 )
@@ -89,7 +92,7 @@ class setupa(commands.Cog):
         }
     )
     async def setupinfo(self, ctx: SlashContext):
-        setup_emb = discord.Embed(title="SETUP - INFO", description="`/setup` 으로 다시 설정할 수 있습니다.")
+        setup_emb = discord.Embed(title="SETUP - INFO", description="`/정보` 으로 다시 설정할 수 있습니다.")
 
         cur = await connect_db()
                 
@@ -107,7 +110,7 @@ class setupa(commands.Cog):
             else:
                 setup_emb.add_field(name=f"카테고리 종류: [{type}]", value=f"**아이디 :** *{channel}*", inline=False)
 
-        await ctx.send(embed=setup_emb)
+        await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
     @cog_ext.cog_context_menu(target=ContextMenuType.MESSAGE, name="선택")
     async def ang(self, ctx: MenuContext):
@@ -122,7 +125,6 @@ class setupa(commands.Cog):
         ]
         row = create_actionrow(*button)
         await ctx.send(f'{ctx.target_message.author.mention}님의 **"{ctx.target_message.content}"**를 선택하셨습니다.', components=[row])
-
 
 def setup(bot):
     bot.add_cog(setupa(bot))

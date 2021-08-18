@@ -1,5 +1,6 @@
 import asyncio
-from aiosqlite.core import connect
+
+from asyncio import TimeoutError
 
 from discord_slash.utils.manage_components import create_select, create_select_option, create_actionrow
 from discord_slash.utils.manage_components import wait_for_component
@@ -8,6 +9,7 @@ from discord_slash.context import ComponentContext
 from discord.ext import commands
 
 from utils.db import connect_db
+from utils.bt import *
 
 class button(commands.Cog):
     def __init__(self, bot):
@@ -31,7 +33,6 @@ class button(commands.Cog):
 
             await user.send("`문의가 종료되었습니다.`")
         elif ctx.component_id == "move":
-            cur = await connect_db()
             categorys_list = []
             for categorys in ctx.guild.categories:
                 categorys_list_value = create_select_option(label=str(categorys.name), value=str(categorys.id))
@@ -45,13 +46,17 @@ class button(commands.Cog):
                     max_values=1,
                 )
             )
-            await ctx.send(content=f"** **", components=[select_category], hidden=True)
-
-            select_ctx: ComponentContext = await wait_for_component(self.bot, components=select_category)
+            msg = await ctx.send(content=f"{ctx.author.mention},", components=[select_category, cancel_bt])
+            try:
+                select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category, cancel_bt], timeout=30)
+            except TimeoutError:
+                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
             new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
             await ctx.channel.edit(category=new_category)
-            await select_ctx.edit_origin(content=f"`{new_category.name}`으로 이동하였습니다.", components=None)
+            await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
+        elif ctx.component_id == "cancel":
+            return await ctx.edit_origin(content='`진행 중인 작업이 취소되었습니다.`', components=None, embed=None)
 
 def setup(bot):
     bot.add_cog(button(bot))

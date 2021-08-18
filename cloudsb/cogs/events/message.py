@@ -41,6 +41,10 @@ class message(commands.Cog):
 
                     channel = self.bot.get_channel(id=channel[0])
 
+                    if channel == None:
+                        await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
+                        pass
+
                     if len(message.attachments) != 0:
                         if len(message.content) == 0:
                             message.content = "**N/A**"
@@ -55,7 +59,7 @@ class message(commands.Cog):
                 try:
                     ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=30)
                 except TimeoutError:
-                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=None)
+                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=None, embed=None)
                     return await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
 
                 await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", (ctx.component_id,))
@@ -105,6 +109,9 @@ class message(commands.Cog):
                             elif role.name == "@everyone":
                                 continue
                             role_list.append(role.name)
+
+                        if len(role_list) == 0:
+                            role_list = ['N/A'] 
 
                         await cur.execute("SELECT User_id FROM cloud_service WHERE Channel = ?", (message.channel.id,))
                         user_id = await cur.fetchone()

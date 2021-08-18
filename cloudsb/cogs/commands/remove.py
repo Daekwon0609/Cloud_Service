@@ -1,6 +1,10 @@
-from discord_slash.utils.manage_commands import remove_all_commands, create_permission
+import asyncio
+
 from discord_slash import cog_ext, SlashContext
-from discord_slash.model import ButtonStyle, SlashCommandPermissionType
+
+from utils.json import load_j
+from utils.db import connect_db
+
 from discord.ext import commands
 
 class remove(commands.Cog):
@@ -8,22 +12,32 @@ class remove(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name='refresh', 
-        description="모든 Slash 명령어를 삭제합니다.", 
-        default_permission=False,
-        permissions={
-            855722532107059221: [
-                create_permission(
-                    id=720112607268307004,
-                    id_type=SlashCommandPermissionType.USER,
-                    permission=True
-                )
-            ]
-        }
+        name='종료', 
+        description="진행 중인 문의를 종료합니다.", 
+        guild_ids=[load_j['sub_guild']]
     )
-    async def refresh(self, ctx: SlashContext):
-        await remove_all_commands(self.bot.user.id, "ODY3NDM5NzEyMzM1NjkxODE2.YPhILw.yGiW3fEdNXgrg9-tFejZzky0raA", [ctx.guild.id])
-        await ctx.send(hidden=True, content="모든 Slash 명령어를 삭제하였습니다.")
+    async def close(self, ctx: SlashContext):
+        cur = await connect_db()
+
+        await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+        channel = await cur.fetchone()
+
+        if channel == None or ctx.channel.id != channel[0]:
+            return await ctx.send(content=f"{ctx.author.mention}, `해당 채널은 문의 채널이 아닙니다!`")
+
+        await cur.execute("SELECT User_id FROM cloud_service WHERE Channel= ?", (ctx.channel.id,))
+        user_id = await cur.fetchone()
+
+        user = self.bot.get_user(id=user_id[0])
+
+        await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+
+        await ctx.send(f"{ctx.author.mention}, 문의가 5초 뒤에 종료됩니다.", hidden=True)
+
+        await asyncio.sleep(5)
+        await ctx.channel.delete()
+
+        await user.send("`문의가 종료되었습니다.`")
 
 def setup(bot):
     bot.add_cog(remove(bot))

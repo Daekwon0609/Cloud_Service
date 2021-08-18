@@ -1,3 +1,4 @@
+from discord_slash.utils.manage_commands import create_choice
 from discord_slash.utils.manage_components import create_button, create_actionrow
 
 from discord_slash.model import ButtonStyle
@@ -30,5 +31,13 @@ scr_bt = create_actionrow(
         style=ButtonStyle.blue,
         label="이동하기",
         custom_id="move"
+    )
+)
+
+cancel_bt = create_actionrow(
+    create_button(
+        style=ButtonStyle.red,
+        label="취소하기",
+        custom_id="cancel"
     )
 )
