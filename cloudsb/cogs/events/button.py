@@ -1,4 +1,5 @@
 import asyncio
+import discord
 
 from asyncio import TimeoutError
 
@@ -48,15 +49,19 @@ class button(commands.Cog):
             )
             msg = await ctx.send(content=f"{ctx.author.mention},", components=[select_category, cancel_bt])
             try:
-                select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category, cancel_bt], timeout=30)
+                select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
             except TimeoutError:
-                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
+                try:
+                    return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
+                except discord.errors.Notfound:
+                    return
+
             new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
             await ctx.channel.edit(category=new_category)
             await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
         elif ctx.component_id == "cancel":
-            return await ctx.edit_origin(content='`진행 중인 작업이 취소되었습니다.`', components=None, embed=None)
+            return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 작업이 취소되었습니다.`', components=None, embed=None)
 
 def setup(bot):
     bot.add_cog(button(bot))
