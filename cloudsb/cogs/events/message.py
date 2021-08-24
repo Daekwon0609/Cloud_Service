@@ -103,7 +103,7 @@ class message(commands.Cog):
                         role_name = sub_guild.get_member(user_id=message.author.id).roles
 
                         role_list = []
-                        for role, ban_name, _ in zip(role_name, specialtext):
+                        for role, ban_name in zip(role_name, specialtext):
                             if role.name == "@everyone":
                                 continue
                             elif role.name in ban_name:
