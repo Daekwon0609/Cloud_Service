@@ -9,9 +9,9 @@ from discord_slash.utils.manage_components import wait_for_component
 from discord_slash.context import ComponentContext
 
 from utils.db import connect_db
-from utils.cn import change_name
+from utils.change import change_name
 
-from utils.bt import *
+from utils.button import *
 from utils.json import *
 from utils.sptext import *
 

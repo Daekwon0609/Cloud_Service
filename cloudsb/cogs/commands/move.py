@@ -8,9 +8,9 @@ from discord_slash.context import ComponentContext
 from discord_slash import cog_ext, SlashContext
 
 from utils.db import connect_db
-from utils.cn import change_name
+from utils.change import change_name
 from utils.json import load_j
-from utils.bt import *
+from utils.button import *
 
 from discord.ext import commands
 

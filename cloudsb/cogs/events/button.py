@@ -10,7 +10,7 @@ from discord_slash.context import ComponentContext
 from discord.ext import commands
 
 from utils.db import connect_db
-from utils.bt import *
+from utils.button import *
 
 class button(commands.Cog):
     def __init__(self, bot):
