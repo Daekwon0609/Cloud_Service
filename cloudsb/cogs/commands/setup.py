@@ -9,7 +9,7 @@ from discord_slash import cog_ext, SlashContext
 from discord_slash.context import MenuContext
 
 from utils.db import connect_db
-from utils.cn import change_name
+from utils.change import change_name, change_type
 from utils.json import load_j
 
 from discord.ext import commands
@@ -26,7 +26,7 @@ class setupa(commands.Cog):
         options=[
             create_option(
                 name="categories",
-                description="설정할 카테고리의 종류를 선택해주세요.",
+                description="설정할 카테고리의 종류를 선택해주세요. (로그채널은 별도 설정입니다.)",
                 option_type=3,
                 required=True,
                 choices=[
@@ -41,6 +41,10 @@ class setupa(commands.Cog):
                     create_choice(
                         name="신고하기",
                         value="report_category" 
+                    ),
+                    create_choice(
+                        name="로그채널",
+                        value="log_channel"
                     )
                 ]
             ),
@@ -63,7 +67,11 @@ class setupa(commands.Cog):
     )
     async def add_button(self, ctx: SlashContext, categories: str, category: str):
         if str(category.type) != "category":
-            return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
+            if str(categories) == "log_channel":
+                if str(category.type) != "text":
+                    return await ctx.send(hidden=True, content="메시지 채널 타입으로 다시 선택해주세요")
+            else:
+                return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
 
         category = self.bot.get_channel(id=category.id)
 
@@ -72,11 +80,13 @@ class setupa(commands.Cog):
         await cur.execute("SELECT Category FROM cloud_setup WHERE Category = ? and Type = ?", (category.id, categories))
         same_id = await cur.fetchone()
 
-        if same_id[0] == category.id:
+        if same_id == None:
+            pass
+        elif same_id[0] == category.id:
             categories = change_name(categories)
             return await ctx.send(hidden=True, content=f"중복된 내용이므로 취소되었습니다. `(종류: {categories}, 아이디: {category.id})`")
 
-        await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))  
+        await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))
 
         categories = change_name(categories)
 
@@ -108,14 +118,15 @@ class setupa(commands.Cog):
 
         for categ in list_categ:
             type = change_name(categ[1])
+            type_2 = change_type(categ[1])
             id = self.bot.get_channel(id=categ[0])
 
             try:
                 channel = id.id
             except AttributeError:
-                setup_emb.add_field(name=f"카테고리 종류: [{type}]", value=f"**아이디 :** *N/A*", inline=False)
+                setup_emb.add_field(name=f"종류: [{type}] - ({type_2}) ", value=f"**아이디 :** *N/A*", inline=False)
             else:
-                setup_emb.add_field(name=f"카테고리 종류: [{type}]", value=f"**아이디 :** *{channel}*", inline=False)
+                setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
 
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
