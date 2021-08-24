@@ -103,15 +103,14 @@ class message(commands.Cog):
                         role_name = sub_guild.get_member(user_id=message.author.id).roles
 
                         role_list = []
-                        for role, ban_name in zip(role_name, specialtext):
-                            if role.name != ban_name:
+                        for role, ban_name, _ in zip(role_name, specialtext):
+                            if role.name == "@everyone":
                                 continue
-                            elif role.name == "@everyone":
-                                continue
-                            role_list.append(role.name)
+                            elif role.name in ban_name:
+                                role_list.append(role.name)
 
                         if len(role_list) == 0:
-                            role_list = ['N/A'] 
+                            role_list = ['N/A']
 
                         await cur.execute("SELECT User_id FROM cloud_service WHERE Channel = ?", (message.channel.id,))
                         user_id = await cur.fetchone()

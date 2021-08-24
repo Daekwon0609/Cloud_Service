@@ -1,4 +1,3 @@
-from discord_slash.utils.manage_commands import create_choice
 from discord_slash.utils.manage_components import create_button, create_actionrow
 
 from discord_slash.model import ButtonStyle

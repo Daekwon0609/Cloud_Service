@@ -69,6 +69,13 @@ class setupa(commands.Cog):
 
         cur = await connect_db()
 
+        await cur.execute("SELECT Category FROM cloud_setup WHERE Category = ? and Type = ?", (category.id, categories))
+        same_id = await cur.fetchone()
+
+        if same_id[0] == category.id:
+            categories = change_name(categories)
+            return await ctx.send(hidden=True, content=f"중복된 내용이므로 취소되었습니다. `(종류: {categories}, 아이디: {category.id})`")
+
         await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))  
 
         categories = change_name(categories)
@@ -112,19 +119,9 @@ class setupa(commands.Cog):
 
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
-    @cog_ext.cog_context_menu(target=ContextMenuType.MESSAGE, name="선택")
+    @cog_ext.cog_context_menu(target=ContextMenuType.USER, name="사용자 정보 보기")
     async def ang(self, ctx: MenuContext):
-        emoji = self.bot.get_emoji(id=876463270310068315)
-        button = [
-            create_button(
-                style=ButtonStyle.URL,
-                label="바로가기",
-                emoji=emoji,
-                url=ctx.target_message.jump_url
-            )
-        ]
-        row = create_actionrow(*button)
-        await ctx.send(f'{ctx.target_message.author.mention}님의 **"{ctx.target_message.content}"**를 선택하셨습니다.', components=[row])
+        await ctx.send(f'`ID: {ctx.target_author.id}, TAG: {ctx.target_author}`')
 
 def setup(bot):
     bot.add_cog(setupa(bot))
