@@ -11,6 +11,7 @@ from discord.ext import commands
 
 from utils.db import connect_db
 from utils.button import *
+from utils.logging import Add_log
 
 class button(commands.Cog):
     def __init__(self, bot):
@@ -25,11 +26,12 @@ class button(commands.Cog):
 
             user = self.bot.get_user(id=user_id[0])
 
-            await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
-
             await ctx.send(f"{ctx.author.mention}, 문의가 5초 뒤에 종료됩니다.", hidden=True)
 
             await asyncio.sleep(5)
+
+            await Add_log(ctx.channel, user, ctx.author, self.bot)
+            await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
             await ctx.channel.delete()
 
             await user.send("`문의가 종료되었습니다.`")
