@@ -1,3 +1,8 @@
+def replace_all(text, dic):
+    for i, j in dic.items():
+        text = text.replace(i, j)
+    return text
+
 def change_name(value):
     if value == "server_category":
         value = "서버문의"

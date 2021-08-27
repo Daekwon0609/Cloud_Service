@@ -13,8 +13,8 @@ class close(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name='종료', 
-        description="진행 중인 문의를 종료합니다.", 
+        name='종료',
+        description="진행 중인 문의를 종료합니다.",
         guild_ids=[load_j['sub_guild']]
     )
     async def close(self, ctx: SlashContext):
