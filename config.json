@@ -1,8 +1,8 @@
 {
-    "main_guild": 메인 서버 ID,
-    "sub_guild": 문의를 받는 서버 ID,
+    "main_guild": 123,
+    "sub_guild": 123,
     "token": "token",
 
-    "setup_role": 설정 ID,
-    "blacklist_role": 블랙리스트 ID
+    "setup_role": 123,
+    "blacklist_role": 123
 }
