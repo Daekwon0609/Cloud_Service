@@ -17,6 +17,11 @@ service_buttons_1 = create_actionrow(
         style=ButtonStyle.red,
         label="신고하기",
         custom_id="report_category"
+    ),
+    create_button(
+        style=ButtonStyle.gray,
+        label="취소하기",
+        custom_id="cancel"
     )
 )
 
