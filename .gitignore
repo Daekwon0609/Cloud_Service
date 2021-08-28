@@ -1,3 +1,5 @@
-db/log/*
-db/bot.db
-config.json
+db/log/
+
+*.db
+*.txt
+!base.txt
