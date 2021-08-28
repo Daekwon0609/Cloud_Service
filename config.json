@@ -1,8 +1,8 @@
 {
-    "main_guild": 855722532107059221,
-    "sub_guild": 855722532107059221,
-    "token": "ODY3NDM5NzEyMzM1NjkxODE2.YPhILw.yGiW3fEdNXgrg9-tFejZzky0raA",
+    "main_guild": 메인 서버 ID,
+    "sub_guild": 문의를 받는 서버 ID,
+    "token": "token",
 
-    "setup_role": 877267662223323176,
-    "blacklist_role": 877267662223323176
+    "setup_role": 설정 ID,
+    "blacklist_role": 블랙리스트 ID
 }
