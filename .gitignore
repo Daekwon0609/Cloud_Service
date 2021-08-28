@@ -1,5 +1,4 @@
-db/log/
+db/
 
-*.db
 *.txt
 !base.txt
