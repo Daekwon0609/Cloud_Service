@@ -50,7 +50,7 @@ class setupa(commands.Cog):
             ),
             create_option(
                 name="category",
-                description="설정할 카테고리의 이름을 작성하거나, 선택해주세요. (ex. #카테고리 이름)",
+                description="설정할 카테고리의 이름을 작성하거나, 선택해주세요. (ex. 카테고리 이름)",
                 option_type=7,
                 required=True
             )
@@ -90,7 +90,7 @@ class setupa(commands.Cog):
 
         categories = change_name(categories)
 
-        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 카테고리 아이디: **{category.id}**")
+        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 아이디: **{category.id}**")
         
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 

@@ -90,7 +90,7 @@ class message(commands.Cog):
                 scr_emb.add_field(name="문의 내용", value=message.content, inline=False)
 
                 await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
-                await channel.send(content=f"닉네임: **{guild_nickname}**, 뭘 해야하나 ㅋ\n최근 **{len_log}** 건의 문의 기록이 있음. 기록을 확인할려면 `!로그`를 입력하세요.\n────────────────────────────────")
+                await channel.send(content=f"닉네임: **{guild_nickname}**, 뭘 해야하나 ㅋ\n최근 **{len_log}** 건의 문의 기록이 있음. 기록을 확인할려면 `/로그`를 입력하세요.\n────────────────────────────────")
             else:
                 cur = await connect_db()
 
