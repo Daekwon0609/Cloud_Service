@@ -37,21 +37,20 @@ class blacklist(commands.Cog):
         }
     )
     async def blacklist(self, ctx: SlashContext, user: discord.User):
-        cur = await connect_db()
+        async with connect_db as cur:
+            await cur.execute("SELECT user_id FROM cloud_blacklist WHERE user_id = ?", (user.id,))
+            user_same = await cur.fetchone()
 
-        await cur.execute("SELECT user_id FROM cloud_blacklist WHERE user_id = ?", (user.id,))
-        user_same = await cur.fetchone()
+            if user_same == None:
+                pass
+            elif user_same[0] == user.id:
+                return await ctx.send(hidden=True, content=f"이미 블랙리스트 유저이므로 취소되었습니다. `(유저 아이디: {user.id})`")
+            
+            await cur.execute("INSERT INTO cloud_blacklist(user_id, time) values(?, ?)", (user.id, int(datetime.datetime.now().timestamp())))
 
-        if user_same == None:
-            pass
-        elif user_same[0] == user.id:
-            return await ctx.send(hidden=True, content=f"이미 블랙리스트 유저이므로 취소되었습니다. `(유저 아이디: {user.id})`")
-        
-        await cur.execute("INSERT INTO cloud_blacklist(user_id, time) values(?, ?)", (user.id, int(datetime.datetime.now().timestamp())))
-
-        blacklist_emb = discord.Embed(title="BLACKLIST - COMMAND", description=f"등록 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)")
-        
-        await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
+            blacklist_emb = discord.Embed(title="BLACKLIST - COMMAND", description=f"등록 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)")
+            
+            await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
 
 def setup(bot):
     bot.add_cog(blacklist(bot))

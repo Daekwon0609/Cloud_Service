@@ -66,33 +66,32 @@ class setupa(commands.Cog):
         }
     )
     async def add_button(self, ctx: SlashContext, categories: str, category: str):
-        if str(category.type) != "category":
-            if str(categories) == "log_channel":
-                if str(category.type) != "text":
-                    return await ctx.send(hidden=True, content="메시지 채널 타입으로 다시 선택해주세요")
-            else:
-                return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
+        async with connect_db as cur:
+            if str(category.type) != "category":
+                if str(categories) == "log_channel":
+                    if str(category.type) != "text":
+                        return await ctx.send(hidden=True, content="메시지 채널 타입으로 다시 선택해주세요")
+                else:
+                    return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
 
-        category = self.bot.get_channel(id=category.id)
+            category = self.bot.get_channel(id=category.id)
 
-        cur = await connect_db()
+            await cur.execute("SELECT Category FROM cloud_setup WHERE Category = ? and Type = ?", (category.id, categories))
+            same_id = await cur.fetchone()
 
-        await cur.execute("SELECT Category FROM cloud_setup WHERE Category = ? and Type = ?", (category.id, categories))
-        same_id = await cur.fetchone()
+            if same_id == None:
+                pass
+            elif same_id[0] == category.id:
+                categories = change_name(categories)
+                return await ctx.send(hidden=True, content=f"중복된 내용이므로 취소되었습니다. `(종류: {categories}, 아이디: {category.id})`")
 
-        if same_id == None:
-            pass
-        elif same_id[0] == category.id:
+            await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))
+
             categories = change_name(categories)
-            return await ctx.send(hidden=True, content=f"중복된 내용이므로 취소되었습니다. `(종류: {categories}, 아이디: {category.id})`")
 
-        await cur.execute("UPDATE cloud_setup SET Category = ? WHERE Type = ?", (category.id, categories))
-
-        categories = change_name(categories)
-
-        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 아이디: **{category.id}**")
-        
-        await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
+            setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 아이디: **{category.id}**")
+            
+            await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
     @cog_ext.cog_slash(
         name="정보",
@@ -109,26 +108,25 @@ class setupa(commands.Cog):
         }
     )
     async def setupinfo(self, ctx: SlashContext):
-        setup_emb = discord.Embed(title="SETUP - INFO", description="`/정보` 으로 다시 설정할 수 있습니다.")
+        async with connect_db as cur:
+            setup_emb = discord.Embed(title="SETUP - INFO", description="`/정보` 으로 다시 설정할 수 있습니다.")
+                    
+            await cur.execute("SELECT Category, Type FROM cloud_setup")
+            list_categ = await cur.fetchall()
 
-        cur = await connect_db()
-                
-        await cur.execute("SELECT Category, Type FROM cloud_setup")
-        list_categ = await cur.fetchall()
+            for categ in list_categ:
+                type = change_name(categ[1])
+                type_2 = change_type(categ[1])
+                id = self.bot.get_channel(id=categ[0])
 
-        for categ in list_categ:
-            type = change_name(categ[1])
-            type_2 = change_type(categ[1])
-            id = self.bot.get_channel(id=categ[0])
+                try:
+                    channel = id.id
+                except AttributeError:
+                    setup_emb.add_field(name=f"종류: [{type}] - ({type_2}) ", value=f"**아이디 :** *N/A*", inline=False)
+                else:
+                    setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
 
-            try:
-                channel = id.id
-            except AttributeError:
-                setup_emb.add_field(name=f"종류: [{type}] - ({type_2}) ", value=f"**아이디 :** *N/A*", inline=False)
-            else:
-                setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
-
-        await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
+            await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
     @cog_ext.cog_context_menu(target=ContextMenuType.USER, name="사용자 정보 보기")
     async def ang(self, ctx: MenuContext):

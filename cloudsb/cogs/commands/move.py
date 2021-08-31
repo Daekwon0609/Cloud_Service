@@ -24,39 +24,38 @@ class move(commands.Cog):
         guild_ids=[load_j['sub_guild']]
     )
     async def move(self, ctx: SlashContext):
-        cur = await connect_db()
+        async with connect_db as cur:
+            await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+            channel = await cur.fetchone()
 
-        await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
-        channel = await cur.fetchone()
+            if channel == None or ctx.channel.id != channel[0]:
+                return await ctx.send(content=f"{ctx.author.mention}, `해당 채널은 문의 채널이 아닙니다!`")
 
-        if channel == None or ctx.channel.id != channel[0]:
-            return await ctx.send(content=f"{ctx.author.mention}, `해당 채널은 문의 채널이 아닙니다!`")
+            categorys_list = []
+            for categorys in ctx.guild.categories:
+                categorys_list_value = create_select_option(label=str(categorys.name), value=str(categorys.id))
+                categorys_list.append(categorys_list_value)
 
-        categorys_list = []
-        for categorys in ctx.guild.categories:
-            categorys_list_value = create_select_option(label=str(categorys.name), value=str(categorys.id))
-            categorys_list.append(categorys_list_value)
-
-        select_category = create_actionrow(
-            create_select(
-                options=categorys_list,
-                placeholder="이동할 카테고리를 선택해주세요.",
-                min_values=1,
-                max_values=1,
+            select_category = create_actionrow(
+                create_select(
+                    options=categorys_list,
+                    placeholder="이동할 카테고리를 선택해주세요.",
+                    min_values=1,
+                    max_values=1,
+                )
             )
-        )
-        msg = await ctx.send(content=f"{ctx.author.mention}", components=[select_category, cancel_bt])
-        try:
-            select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
-        except TimeoutError:
+            msg = await ctx.send(content=f"{ctx.author.mention}", components=[select_category, cancel_bt])
             try:
-                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
-            except discord.errors.Notfound:
-                return
-        new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
+                select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
+            except TimeoutError:
+                try:
+                    return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
+                except discord.errors.Notfound:
+                    return
+            new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
-        await ctx.channel.edit(category=new_category)
-        await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
+            await ctx.channel.edit(category=new_category)
+            await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
 
 def setup(bot):
     bot.add_cog(move(bot))
