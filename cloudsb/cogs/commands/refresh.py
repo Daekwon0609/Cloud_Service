@@ -8,7 +8,7 @@ class refresh(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name='refresh', 
+        name='전체삭제', 
         description="모든 Slash 명령어를 삭제합니다.", 
         default_permission=False,
         permissions={
