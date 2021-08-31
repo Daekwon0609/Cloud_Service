@@ -1,5 +1,7 @@
 import asyncio
 import discord
+import os
+import datetime
 
 from asyncio import TimeoutError
 
@@ -9,8 +11,10 @@ from discord_slash.utils.manage_components import wait_for_component
 from discord_slash.context import ComponentContext
 from discord.ext import commands
 
+from utils.json import load_j
 from utils.db import connect_db
 from utils.button_list import *
+from utils.change import change_name
 from utils.logging import Add_log
 
 class button(commands.Cog):
@@ -66,8 +70,26 @@ class button(commands.Cog):
             return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 작업이 취소되었습니다.`', components=None, embed=None)
         elif ctx.component_id == "service_queue_cancel":
             cur = await connect_db()
-            await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
-            return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', components=None, embed=None)
+            await cur.execute("SELECT User_id FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
+            queue_cancel = await cur.fetchone()
+
+            if queue_cancel is None:
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', components=None, embed=None)
+            else:
+                await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', components=None, embed=None)
+            
+        elif ctx.component_id == "report_category" or ctx.component_id == "support_category" or ctx.component_id == "server_category":
+            cur = await connect_db()
+
+            await cur.execute("SELECT Type FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
+            queue_service = await cur.fetchone()
+
+            if queue_service is None:
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `비 정상적인 행동이 감지되어 취소되었습니다.`', components=None, embed=None)
+            elif queue_service[0] == 1:
+                await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `비 정상적인 오류가 감지되어 취소되었습니다.`', components=None, embed=None)
 
 def setup(bot):
     bot.add_cog(button(bot))

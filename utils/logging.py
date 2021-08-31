@@ -13,9 +13,10 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
         time = f"{time.year}-{time.month}-{time.day} {time.hour}:{time.minute}:{time.second} UTC"
         if message.author == bot.user:
             if "@everyone" in message.content:
-                if message.content.endswith("─"):
-                    message_content = replace_all(message.content, badwords)
-                    LOGS.append(f"\n[{time}] System : {message_content}")
+                pass
+            elif message.content.startswith("닉"):
+                message_content = replace_all(message.content, badwords)
+                LOGS.append(f"\n\n{message_content}")
             else:
                 message_content = replace_all(message.content, badwords)
                 LOGS.append(f"\n[{time}] {message_content}")

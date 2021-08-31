@@ -53,7 +53,7 @@ class message(commands.Cog):
 
                     return await channel.send(f"**{message.author.name}:** {message.content}")
                 
-                await cur.execute("INSERT INTO cloud_service(User_id, Time, Type) VALUES(?, ?, ?)", (message.author.id, int(datetime.datetime.now().timestamp()), 1))
+                await cur.execute("INSERT INTO cloud_service(User_id, Message, Time, Type) VALUES(?, ?, ?, ?)", (message.author.id, message.content, int(datetime.datetime.now().timestamp()), 1))
 
                 msg = await message.channel.send(content="`문의할 주제를 선택해주세요.`", components=[service_buttons_1])
 
@@ -73,10 +73,8 @@ class message(commands.Cog):
                 guild_nickname = guild_nickname.display_name
 
                 channel = await guild.create_text_channel(name=f"{message.author.name}-{message.author.discriminator}", category=category)
-                await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '{message.content}' WHERE User_id = '{message.author.id}'")
 
                 suf_emb = discord.Embed(title="문의가 정상적으로 접수되었습니다.", description=f"<t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.green())
-                suf_emb.add_field(name="문의 내용", value=message.content, inline=False)
                 suf_emb.add_field(name="문의 종류", value=str(change_name(ctx.component_id)), inline=False)
 
                 await ctx.edit_origin(content=None, embed=suf_emb, components=None)
@@ -87,10 +85,16 @@ class message(commands.Cog):
                         len_log = len_log + 1    
             
                 scr_emb = discord.Embed(title=f"{ctx.author} ({ctx.author.id})", description=f"접수된 시간: <t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.blurple())
-                scr_emb.add_field(name="문의 내용", value=message.content, inline=False)
 
                 await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
                 await channel.send(content=f"닉네임: **{guild_nickname}**, 뭘 해야하나 ㅋ\n최근 **{len_log}** 건의 문의 기록이 있음. 기록을 확인할려면 `/로그`를 입력하세요.\n────────────────────────────────")
+                
+                if len(message.attachments) != 0:
+                    if len(message.content) == 0:
+                        message.content = "**N/A**"
+                    return await channel.send(f"**{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+
+                return await channel.send(f"**{message.author.name}:** {message.content}")
             else:
                 cur = await connect_db()
 
@@ -98,7 +102,7 @@ class message(commands.Cog):
                 channels = await cur.fetchall()
 
                 if len(channels) == 0:
-                    await message.channel.send("Database에 등록된 채널이 없습니다.") 
+                    pass
                 for channel in channels:
                     self_channel = self.bot.get_channel(id=channel[0])
                     if self_channel == None:
