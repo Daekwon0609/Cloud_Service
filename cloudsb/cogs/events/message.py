@@ -12,7 +12,7 @@ from discord_slash.context import ComponentContext
 from utils.db import connect_db
 from utils.change import change_name
 
-from utils.button import *
+from utils.button_list import *
 from utils.json import *
 from utils.sptext import *
 

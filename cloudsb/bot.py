@@ -1,10 +1,9 @@
 import glob
 import discord
+import asyncio
 
 from discord_slash import SlashCommand
 from discord.ext.commands.bot import Bot
-
-
 
 class Cloudsb(Bot):
     def __init__(self, command_prefix, **options) -> None:
@@ -17,6 +16,7 @@ class Cloudsb(Bot):
 
 def load_extensions(bot: Cloudsb):
     #offer code
+
     extensions = list(
         map(
             lambda path: path.replace("./", "")

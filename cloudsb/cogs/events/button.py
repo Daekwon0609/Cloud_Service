@@ -10,7 +10,7 @@ from discord_slash.context import ComponentContext
 from discord.ext import commands
 
 from utils.db import connect_db
-from utils.button import *
+from utils.button_list import *
 from utils.logging import Add_log
 
 class button(commands.Cog):
@@ -64,6 +64,10 @@ class button(commands.Cog):
             await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
         elif ctx.component_id == "cancel":
             return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 작업이 취소되었습니다.`', components=None, embed=None)
+        elif ctx.component_id == "service_queue_cancel":
+            cur = await connect_db()
+            await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
+            return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', components=None, embed=None)
 
 def setup(bot):
     bot.add_cog(button(bot))

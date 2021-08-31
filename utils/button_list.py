@@ -21,7 +21,7 @@ service_buttons_1 = create_actionrow(
     create_button(
         style=ButtonStyle.gray,
         label="취소하기",
-        custom_id="cancel"
+        custom_id="service_queue_cancel"
     )
 )
 

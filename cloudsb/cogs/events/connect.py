@@ -2,7 +2,7 @@ import discord
 
 from datetime import date
 from discord.ext import commands
-from cloudsb.bot import Cloudsb
+from utils.check import check_config
 
 
 class ready(commands.Cog):
@@ -19,7 +19,12 @@ class ready(commands.Cog):
         print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
         print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
 
-        await self.bot.change_presence(activity=discord.Game(name="DM을 통해 문의접수"), status=discord.Status.online)
+        value = await check_config(self.bot)
 
+        if value == True:
+            await self.bot.change_presence(activity=discord.Game(name="DM을 통해 문의접수"), status=discord.Status.online)
+        else:
+            await self.bot.change_presence(activity=discord.Game(name="/설정 대기중"), status=discord.Status.idle)
+        
 def setup(bot):
     bot.add_cog(ready(bot))
