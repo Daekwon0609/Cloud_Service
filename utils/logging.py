@@ -14,7 +14,7 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
         if message.author == bot.user:
             if "@everyone" in message.content:
                 pass
-            elif message.content.startswith("닉"):
+            elif message.content.startswith("닉네임:"):
                 message_content = replace_all(message.content, badwords)
                 LOGS.append(f"\n\n{message_content}")
             else:
