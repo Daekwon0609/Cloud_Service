@@ -1,8 +1,0 @@
-{
-    "main_guild": 123,
-    "sub_guild": 123,
-    "token": "TOKEN",
-
-    "setup_role": 123,
-    "blacklist_role": 123
-}
