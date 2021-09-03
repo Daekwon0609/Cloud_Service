@@ -15,16 +15,12 @@ class ready(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"───────────────────────────────────────\nIn use: Cloud RP\nConnection with the server is complete.")
-        print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
-        print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
-
         value = await check_config(self.bot)
         
         if bool(value):
             await self.bot.change_presence(activity=discord.Game(name=f'/설정 대기'), status=discord.Status.idle)
             print(f'설정 값이 없거나, 찾을 수 없는 채널 및 카테고리가 있어 프로세스가 중지되었습니다.')
-            print("/설정 을 모두 완료한 후에 프로세스를 다시 시작해주세요.")
+            print('디스코드 내에서 "/설정"을 모두 완료한 후에 프로세스를 다시 시작해주세요.')
             
             for check in list(map(str, self.bot.extensions.keys())):
                 if check.endswith(("setup", "error")):
@@ -36,6 +32,10 @@ class ready(commands.Cog):
             print(f'문제 항목: {", ".join(value)}')
         else:
             await self.bot.change_presence(activity=discord.Game(name=f'DM을 통해 문의접수'), status=discord.Status.online)
+
+            print(f"───────────────────────────────────────\nIn use: Cloud RP\nConnection with the server is complete.")
+            print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
+            print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
 
 def setup(bot):
     bot.add_cog(ready(bot))
