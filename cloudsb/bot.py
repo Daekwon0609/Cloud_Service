@@ -1,6 +1,5 @@
 import glob
 import discord
-import asyncio
 
 from discord_slash import SlashCommand
 from discord.ext.commands.bot import Bot
@@ -25,7 +24,7 @@ def load_extensions(bot: Cloudsb):
             filter(lambda path: "__" not in path, glob.glob("./cloudsb/cogs/*/*")),
         )
     )
-
+    
     for cog in extensions:
         try:
             bot.load_extension(cog)
