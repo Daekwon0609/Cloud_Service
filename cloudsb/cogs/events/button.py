@@ -87,7 +87,7 @@ class button(commands.Cog):
 
             if queue_service is None:
                 return await ctx.edit_origin(content=f'{ctx.author.mention}, `비 정상적인 행동이 감지되어 취소되었습니다.`', components=None, embed=None)
-            elif queue_service[0] == 1:
+            elif queue_service[0] == 2:
                 await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
                 return await ctx.edit_origin(content=f'{ctx.author.mention}, `비 정상적인 오류가 감지되어 취소되었습니다.`', components=None, embed=None)
 

@@ -73,7 +73,8 @@ class message(commands.Cog):
                 guild_nickname = guild_nickname.display_name
 
                 channel = await guild.create_text_channel(name=f"{message.author.name}-{message.author.discriminator}", category=category)
-
+                await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '{message.content}' WHERE User_id = '{message.author.id}'")
+                
                 suf_emb = discord.Embed(title="문의가 정상적으로 접수되었습니다.", description=f"<t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.green())
                 suf_emb.add_field(name="문의 종류", value=str(change_name(ctx.component_id)), inline=False)
 
