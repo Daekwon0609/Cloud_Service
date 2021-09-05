@@ -22,5 +22,7 @@ async def check_config(bot: discord.Client):
                 if category == None:
                     cn_value_2 = change_name(value[1])
                     value_none_list.append(cn_value_2)
+    
+    await cur.close()
     return value_none_list
         

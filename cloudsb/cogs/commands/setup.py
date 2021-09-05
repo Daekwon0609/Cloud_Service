@@ -23,6 +23,7 @@ class setupa(commands.Cog):
         name="설정",
         description="고객센터 시스템을 설정합니다.",
         default_permission=False,
+        guild_ids=[load_j['sub_guild']],
         options=[
             create_option(
                 name="categories",
@@ -71,9 +72,9 @@ class setupa(commands.Cog):
         if str(category.type) != "category":
             if str(categories) == "log_channel":
                 if str(category.type) != "text":
-                    return await ctx.send(hidden=True, content="메시지 채널 타입으로 다시 선택해주세요")
+                    return await ctx.send(hidden=True, content="`[텍스트]` 타입으로 다시 선택해주세요")
             else:
-                return await ctx.send(hidden=True, content="카테고리 타입으로 다시 선택해주세요!")
+                return await ctx.send(hidden=True, content="`[카테고리]` 타입으로 다시 선택해주세요!")
 
         category = self.bot.get_channel(id=category.id)
 
@@ -98,6 +99,7 @@ class setupa(commands.Cog):
         name="정보",
         description="고객센터 봇의 설정된 정보를 볼 수 있습니다.",
         default_permission=False,
+        guild_ids=[load_j['sub_guild']],
         permissions={
             load_j['sub_guild']: [
                 create_permission(
@@ -125,7 +127,10 @@ class setupa(commands.Cog):
             except AttributeError:
                 setup_emb.add_field(name=f"종류: [{type}] - ({type_2}) ", value=f"**아이디 :** *N/A*", inline=False)
             else:
-                setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
+                if type_2 == "채널":
+                    setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}* - {id.mention}", inline=False)
+                else:
+                    setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
 
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 

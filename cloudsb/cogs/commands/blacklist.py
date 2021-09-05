@@ -18,26 +18,24 @@ class blacklist(commands.Cog):
         name="블랙리스트",
         description="고객센터 블랙리스트를 지정합니다.",
         default_permission=False,
-        options=[
-            create_option(
-                name="user",
-                description="블랙리스트를 지정할 유저를 선택해주세요.",
-                option_type=6,
-                required=True
-            )
-        ],
-        permissions={
-            load_j['sub_guild']: [
-                create_permission(
-                    id=load_j['blacklist_role'],
-                    id_type=SlashCommandPermissionType.ROLE,
-                    permission=True
-                )
-            ]
-        }
+        guild_ids=[load_j['sub_guild']]
     )
-    async def blacklist(self, ctx: SlashContext, user: discord.User):
-        cur = await connect_db()
+    async def blacklist(self, ctx: SlashContext):        
+        cur = await connect_db()     
+
+        await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+        channel = await cur.fetchone()
+
+        if channel == None or ctx.channel.id != channel[0]:
+            return await ctx.send(content=f"{ctx.author.mention}, `해당 채널은 문의 채널이 아닙니다!`")
+
+        await cur.execute("SELECT User_id FROM cloud_service WHERE Channel= ?", (ctx.channel.id,))
+        user_id = await cur.fetchone()
+
+        user = self.bot.get_user(id=user_id[0])
+        
+        if user == None: 
+            return await ctx.send(f"유저를 찾을 수 없습니다. `(값: {user})`")
         
         await cur.execute("SELECT user_id FROM cloud_blacklist WHERE user_id = ?", (user.id,))
         user_same = await cur.fetchone()
