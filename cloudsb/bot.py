@@ -14,7 +14,6 @@ class Cloudsb(Bot):
         )
 
 def load_extensions(bot: Cloudsb):
-    #offer code
     extensions = list(
         map(
             lambda path: path.replace("./", "")
