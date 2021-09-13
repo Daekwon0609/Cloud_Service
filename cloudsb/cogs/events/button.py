@@ -30,7 +30,7 @@ class button(commands.Cog):
 
             user = self.bot.get_user(id=user_id[0])
 
-            await ctx.send(f"{ctx.author.mention}, 문의가 5초 뒤에 종료됩니다.", hidden=True)
+            await ctx.send(f"{ctx.author.mention}, 문의가 5초 뒤에 종료됩니다.")
 
             await asyncio.sleep(5)
 

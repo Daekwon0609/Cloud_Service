@@ -1,7 +1,6 @@
 import discord
 import datetime
 from datetime import date
-import os
 
 from asyncio import TimeoutError
 
@@ -14,7 +13,6 @@ from utils.change import change_name
 
 from utils.button_list import *
 from utils.json import *
-from utils.sptext import *
 
 from discord.ext import commands
 
@@ -69,8 +67,8 @@ class message(commands.Cog):
                 guild = self.bot.get_guild(id=load_j['main_guild'])
                 category = self.bot.get_channel(id=category_id[0])
 
-                guild_nickname = guild.get_member(user_id=message.author.id)
-                guild_nickname = guild_nickname.display_name
+                guild_member = guild.get_member(user_id=message.author.id)
+                guild_nickname = guild_member.display_name
 
                 channel = await guild.create_text_channel(name=f"{message.author.name}-{message.author.discriminator}", category=category)
                 await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '{message.content}' WHERE User_id = '{message.author.id}'")
@@ -80,15 +78,24 @@ class message(commands.Cog):
 
                 await ctx.edit_origin(content=None, embed=suf_emb, components=None)
 
-                len_log = 1
-                for file in os.listdir("db/log/"):
-                    if file.startswith(f"{str(ctx.author.id)}"):
-                        len_log = len_log + 1    
+                len_log = "N/A"
+
+                await cur.execute("SELECT * FROM cloud_log WHERE user_id = ?", (message.author.id,))
+                log_check = await cur.fetchone()
+
+                if log_check == None:
+                    len_log = "사용자의 첫 문의 접수입니다."
+                else:
+                    await cur.execute("SELECT count FROM cloud_log WHERE user_id = ?", (message.author.id,))
+                    log_no = await cur.fetchone()
+
+                    len_log = f"최근 **{log_no[0]}**건의 문의 기록이 있음. 기록을 확인할려면 `/로그`를 입력하세요."
+                    
             
                 scr_emb = discord.Embed(title=f"{ctx.author} ({ctx.author.id})", description=f"접수된 시간: <t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.blurple())
 
                 await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
-                await channel.send(content=f"닉네임: **{guild_nickname}**, 뭘 해야하나 ㅋ\n최근 **{len_log}** 건의 문의 기록이 있음. 기록을 확인할려면 `/로그`를 입력하세요.\n────────────────────────────────")
+                await channel.send(content=f"닉네임: **{guild_nickname}**\n계정 생성: **<t:{int(guild_member.created_at.timestamp())}:R>**\n서버 가입: **<t:{int(guild_member.joined_at.timestamp())}:R>**\n{len_log}\n────────────────────────────────")
                 
                 if len(message.attachments) != 0:
                     if len(message.content) == 0:
@@ -114,7 +121,7 @@ class message(commands.Cog):
                         role_name = sub_guild.get_member(user_id=message.author.id).roles
 
                         role_list = []
-                        for role, ban_name in zip(role_name, specialtext):
+                        for role, ban_name in zip(role_name, load_j['Admin_Role_name']):
                             if role.name == "@everyone":
                                 continue
                             elif role.name in ban_name:

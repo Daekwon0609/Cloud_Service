@@ -1,5 +1,4 @@
 import discord
-import os
 import datetime
 
 from utils.db import connect_db
@@ -30,10 +29,20 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
     LOGS.append(f"사용자: {user.name}#{user.discriminator} ({str(user.id)}) / 시작 시간: {channel_time.year}-{channel_time.month}-{channel_time.day} {channel_time.hour}:{channel_time.minute}:{channel_time.second} UTC")
     LOGS = LOGS[::-1] # list Backwards
 
-    log_no = 1
-    for file in os.listdir("db/log/"):
-       if file.startswith(f"{str(user.id)}"):
-           log_no = log_no + 1
+    cur = await connect_db()
+
+    await cur.execute("SELECT * FROM cloud_log WHERE user_id = ?", (user.id,))
+    log_check = await cur.fetchone()
+
+    if log_check == None:
+        await cur.execute("INSERT INTO cloud_log(user_id, time, count) values(?, ?, ?)", (user.id, int(datetime.datetime.now().timestamp()), 1))
+    else:
+        await cur.execute("UPDATE cloud_log SET count = count + ? WHERE user_id = ?", (1, user.id))
+
+    await cur.execute("SELECT count FROM cloud_log WHERE user_id = ?", (user.id,))
+    log_no = await cur.fetchone()
+
+    log_no = log_no[0]
 
     file = open(f"db/log/{str(user.id)}-{str(log_no)}.txt", "w")
 
@@ -46,7 +55,6 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
     file.close()
     file = open(f"db/log/{str(user.id)}-{str(log_no)}.txt","rb")
 
-    cur = await connect_db()
 
     await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", ("log_channel",))
     log_channel = await cur.fetchone()
