@@ -1,7 +1,6 @@
 import discord
 
 from discord_slash.utils.manage_commands import create_option, create_permission, create_choice
-from discord_slash.utils.manage_components import create_button, create_actionrow
 
 from discord_slash.model import SlashCommandPermissionType, ContextMenuType
 
@@ -133,10 +132,6 @@ class setupa(commands.Cog):
                     setup_emb.add_field(name=f"종류: [{type}] - ({type_2})", value=f"**아이디 :** *{channel}*", inline=False)
 
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
-
-    @cog_ext.cog_context_menu(target=ContextMenuType.USER, name="사용자 정보 보기")
-    async def ang(self, ctx: MenuContext):
-        await ctx.send(f'`ID: {ctx.target_author.id}, TAG: {ctx.target_author}`')
 
 def setup(bot):
     bot.add_cog(setupa(bot))

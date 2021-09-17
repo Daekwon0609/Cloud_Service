@@ -4,6 +4,10 @@ from utils.json import load_j
 from utils.db import connect_db
 from discord.ext import commands
 
+from discord_slash.model import ContextMenuType
+
+from discord_slash.context import MenuContext
+
 from discord_slash import SlashContext, cog_ext
 from discord_slash.utils.manage_commands import create_option
 
@@ -33,6 +37,10 @@ class create(commands.Cog):
         try: user = await self.bot.fetch_user(user_id=user)
         except: return await ctx.send(hidden=True, content="유저를 찾을 수 없습니다.")
         await ctx.send(f"{user.id}, {user}")
+
+    @cog_ext.cog_context_menu(target=ContextMenuType.USER, name="생성")
+    async def ang(self, ctx: MenuContext):
+        await ctx.send(f'`ID: {ctx.target_author.id}, TAG: {ctx.target_author}`')
 
 def setup(bot):
     bot.add_cog(create(bot))
