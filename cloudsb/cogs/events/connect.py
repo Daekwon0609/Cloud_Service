@@ -36,3 +36,6 @@ class ready(commands.Cog):
             print(f"式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式\nIn use: Cloud RP\nConnection with the server is complete.")
             print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
             print(f"式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式\nbot: ({self.bot.user}, {self.bot.user.id})")
+
+def setup(bot):
+    bot.add_cog(ready(bot   ))
