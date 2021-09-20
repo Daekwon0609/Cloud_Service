@@ -47,9 +47,9 @@ class message(commands.Cog):
                     if len(message.attachments) != 0:
                         if len(message.content) == 0:
                             message.content = "**N/A**"
-                        return await channel.send(f"**{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                        return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
 
-                    return await channel.send(f"**{message.author.name}:** {message.content}")
+                    return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}")
                 
                 await cur.execute("INSERT INTO cloud_service(User_id, Message, Time, Type) VALUES(?, ?, ?, ?)", (message.author.id, message.content, int(datetime.datetime.now().timestamp()), 1))
 

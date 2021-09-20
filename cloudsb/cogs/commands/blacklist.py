@@ -15,8 +15,8 @@ class blacklist(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name="ë¸”ë™ë¦¬ìŠ¤íŠ¸",
-        description="ê³ ê°ì„¼í„° ë¸”ë™ë¦¬ìŠ¤íŠ¸ë¥¼ ì§€ì •í•©ë‹ˆë‹¤.",
+        name="ºí·¢¸®½ºÆ®",
+        description="°í°´¼¾ÅÍ ºí·¢¸®½ºÆ®¸¦ ÁöÁ¤ÇÕ´Ï´Ù.",
         default_permission=False,
         guild_ids=[load_j['sub_guild']]
     )
@@ -27,7 +27,7 @@ class blacklist(commands.Cog):
         channel = await cur.fetchone()
 
         if channel == None or ctx.channel.id != channel[0]:
-            return await ctx.send(content=f"{ctx.author.mention}, `í•´ë‹¹ ì±„ë„ì€ ë¬¸ì˜ ì±„ë„ì´ ì•„ë‹™ë‹ˆë‹¤!`")
+            return await ctx.send(content=f"{ctx.author.mention}, `ÇØ´ç Ã¤³ÎÀº ¹®ÀÇ Ã¤³ÎÀÌ ¾Æ´Õ´Ï´Ù!`")
 
         await cur.execute("SELECT User_id FROM cloud_service WHERE Channel= ?", (ctx.channel.id,))
         user_id = await cur.fetchone()
@@ -35,7 +35,7 @@ class blacklist(commands.Cog):
         user = self.bot.get_user(id=user_id[0])
         
         if user == None: 
-            return await ctx.send(f"ìœ ì €ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. `(ê°’: {user})`")
+            return await ctx.send(f"À¯Àú¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. `(°ª: {user})`")
         
         await cur.execute("SELECT user_id FROM cloud_blacklist WHERE user_id = ?", (user.id,))
         user_same = await cur.fetchone()
@@ -43,11 +43,11 @@ class blacklist(commands.Cog):
         if user_same == None:
             pass
         elif user_same[0] == user.id:
-            return await ctx.send(hidden=True, content=f"ì´ë¯¸ ë¸”ë™ë¦¬ìŠ¤íŠ¸ ìœ ì €ì´ë¯€ë¡œ ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤. `(ìœ ì € ì•„ì´ë””: {user.id})`")
+            return await ctx.send(hidden=True, content=f"ÀÌ¹Ì ºí·¢¸®½ºÆ® À¯ÀúÀÌ¹Ç·Î Ãë¼ÒµÇ¾ú½À´Ï´Ù. `(À¯Àú ¾ÆÀÌµğ: {user.id})`")
         
         await cur.execute("INSERT INTO cloud_blacklist(user_id, time) values(?, ?)", (user.id, int(datetime.datetime.now().timestamp())))
 
-        blacklist_emb = discord.Embed(title="BLACKLIST - COMMAND", description=f"ë“±ë¡ ì‹œê°„: <t:{int(datetime.datetime.now().timestamp())}>\n\nìœ ì €: {user.mention} (**{user.id}**)")
+        blacklist_emb = discord.Embed(title="BLACKLIST - COMMAND", description=f"µî·Ï ½Ã°£: <t:{int(datetime.datetime.now().timestamp())}>\n\nÀ¯Àú: {user.mention} (**{user.id}**)")
         
         await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
 

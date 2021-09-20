@@ -18,9 +18,9 @@ class ready(commands.Cog):
         value = await check_config(self.bot)
         
         if bool(value):
-            await self.bot.change_presence(activity=discord.Game(name=f'/ì„¤ì • ëŒ€ê¸°'), status=discord.Status.idle)
-            print(f'ì„¤ì • ê°’ì´ ì—†ê±°ë‚˜, ì°¾ì„ ìˆ˜ ì—†ëŠ” ì±„ë„ ë° ì¹´í…Œê³ ë¦¬ê°€ ìˆì–´ í”„ë¡œì„¸ìŠ¤ê°€ ì¤‘ì§€ë˜ì—ˆìŠµë‹ˆë‹¤.')
-            print('ë””ìŠ¤ì½”ë“œ ë‚´ì—ì„œ "/ì„¤ì •"ì„ ëª¨ë‘ ì™„ë£Œí•œ í›„ì— í”„ë¡œì„¸ìŠ¤ë¥¼ ë‹¤ì‹œ ì‹œì‘í•´ì£¼ì„¸ìš”.')
+            await self.bot.change_presence(activity=discord.Game(name=f'/¼³Á¤ ´ë±â'), status=discord.Status.idle)
+            print(f'¼³Á¤ °ªÀÌ ¾ø°Å³ª, Ã£À» ¼ö ¾ø´Â Ã¤³Î ¹× Ä«Å×°í¸®°¡ ÀÖ¾î ÇÁ·Î¼¼½º°¡ ÁßÁöµÇ¾ú½À´Ï´Ù.')
+            print('µğ½ºÄÚµå ³»¿¡¼­ "/¼³Á¤"À» ¸ğµÎ ¿Ï·áÇÑ ÈÄ¿¡ ÇÁ·Î¼¼½º¸¦ ´Ù½Ã ½ÃÀÛÇØÁÖ¼¼¿ä.')
             
             for check in list(map(str, self.bot.extensions.keys())):
                 if check.endswith(("setup", "error")):
@@ -28,14 +28,11 @@ class ready(commands.Cog):
                 else:
                     self.bot.unload_extension(name=check)
             
-            print(f'\nì„ì‹œ í™œì„±í™”ëœ Extensions: {", ".join(list(map(str, self.bot.extensions.keys())))}')
-            print(f'ë¬¸ì œ í•­ëª©: {", ".join(value)}')
+            print(f'\nÀÓ½Ã È°¼ºÈ­µÈ Extensions: {", ".join(list(map(str, self.bot.extensions.keys())))}')
+            print(f'¹®Á¦ Ç×¸ñ: {", ".join(value)}')
         else:
-            await self.bot.change_presence(activity=discord.Game(name=f'DMì„ í†µí•´ ë¬¸ì˜ì ‘ìˆ˜'), status=discord.Status.online)
+            await self.bot.change_presence(activity=discord.Game(name=f'DMÀ» ÅëÇØ ¹®ÀÇÁ¢¼ö'), status=discord.Status.online)
 
-            print(f"â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nIn use: Cloud RP\nConnection with the server is complete.")
+            print(f"¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡\nIn use: Cloud RP\nConnection with the server is complete.")
             print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
-            print(f"â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nbot: ({self.bot.user}, {self.bot.user.id})")
-
-def setup(bot):
-    bot.add_cog(ready(bot))
+            print(f"¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡\nbot: ({self.bot.user}, {self.bot.user.id})")

@@ -19,8 +19,8 @@ class move(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name="ì´ë™",
-        description="ì§„í–‰ ì¤‘ì¸ ë¬¸ì˜ ì±„ë„ì„ ì„ íƒí•œ ì¹´í…Œê³ ë¦¬ë¡œ ì´ë™í•©ë‹ˆë‹¤.",
+        name="ÀÌµ¿",
+        description="ÁøÇà ÁßÀÎ ¹®ÀÇ Ã¤³ÎÀ» ¼±ÅÃÇÑ Ä«Å×°í¸®·Î ÀÌµ¿ÇÕ´Ï´Ù.",
         guild_ids=[load_j['sub_guild']]
     )
     async def move(self, ctx: SlashContext):
@@ -30,7 +30,7 @@ class move(commands.Cog):
         channel = await cur.fetchone()
 
         if channel == None or ctx.channel.id != channel[0]:
-            return await ctx.send(content=f"{ctx.author.mention}, `í•´ë‹¹ ì±„ë„ì€ ë¬¸ì˜ ì±„ë„ì´ ì•„ë‹™ë‹ˆë‹¤!`")
+            return await ctx.send(content=f"{ctx.author.mention}, `ÇØ´ç Ã¤³ÎÀº ¹®ÀÇ Ã¤³ÎÀÌ ¾Æ´Õ´Ï´Ù!`")
 
         categorys_list = []
         for categorys in ctx.guild.categories:
@@ -40,7 +40,7 @@ class move(commands.Cog):
         select_category = create_actionrow(
             create_select(
                 options=categorys_list,
-                placeholder="ì´ë™í•  ì¹´í…Œê³ ë¦¬ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.",
+                placeholder="ÀÌµ¿ÇÒ Ä«Å×°í¸®¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.",
                 min_values=1,
                 max_values=1,
             )
@@ -50,13 +50,13 @@ class move(commands.Cog):
             select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
         except TimeoutError:
             try:
-                return await msg.edit(content=f"{ctx.author.mention}, `ì œí•œ ì‹œê°„ ì•ˆì— ì‘ë‹µí•˜ì§€ ì•Šì•„ ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.`", components=None, embed=None)
+                return await msg.edit(content=f"{ctx.author.mention}, `Á¦ÇÑ ½Ã°£ ¾È¿¡ ÀÀ´äÇÏÁö ¾Ê¾Æ Ãë¼ÒµÇ¾ú½À´Ï´Ù.`", components=None, embed=None)
             except discord.errors.Notfound:
                 return
         new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
         await ctx.channel.edit(category=new_category)
-        await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`ìœ¼ë¡œ ì´ë™í•˜ì˜€ìŠµë‹ˆë‹¤.", components=None)
+        await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`À¸·Î ÀÌµ¿ÇÏ¿´½À´Ï´Ù.", components=None)
 
 def setup(bot):
     bot.add_cog(move(bot))

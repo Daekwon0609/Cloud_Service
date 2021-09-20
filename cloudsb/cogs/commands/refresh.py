@@ -9,13 +9,13 @@ class refresh(commands.Cog):
         self.bot = bot
 
     @cog_ext.cog_slash(
-        name='ì „ì²´ì‚­ì œ', 
-        description="ëª¨ë“  Slash ëª…ë ¹ì–´ë¥¼ ì‚­ì œí•©ë‹ˆë‹¤.", 
+        name='ÀüÃ¼»èÁ¦', 
+        description="¸ðµç Slash ¸í·É¾î¸¦ »èÁ¦ÇÕ´Ï´Ù.", 
         guild_ids=[load_j['sub_guild']],
     )
     async def refresh(self, ctx: SlashContext):
         await remove_all_commands(self.bot.user.id, "ODY3NDM5NzEyMzM1NjkxODE2.YPhILw.yGiW3fEdNXgrg9-tFejZzky0raA", [ctx.guild.id])
-        await ctx.send(hidden=True, content="ëª¨ë“  Slash ëª…ë ¹ì–´ë¥¼ ì‚­ì œí•˜ì˜€ìŠµë‹ˆë‹¤.")
+        await ctx.send(hidden=True, content="¸ðµç Slash ¸í·É¾î¸¦ »èÁ¦ÇÏ¿´½À´Ï´Ù.")
 
 def setup(bot):
     bot.add_cog(refresh(bot))

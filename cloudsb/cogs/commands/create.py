@@ -1,15 +1,20 @@
 import discord
+import datetime
 
-from utils.json import load_j
-from utils.db import connect_db
+from discord_slash.model import ButtonStyle
+
 from discord.ext import commands
-
-from discord_slash.model import ContextMenuType
-
-from discord_slash.context import MenuContext
+from discord_slash.context import ComponentContext
 
 from discord_slash import SlashContext, cog_ext
+
 from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_components import create_button, create_actionrow, wait_for_component
+
+from utils.db import connect_db
+from utils.change import change_name
+from utils.button_list import create_select_value, cancel_bt, scr_bt
+from utils.json import load_j
 
 class create(commands.Cog):
     def __init__(self, bot):
@@ -36,11 +41,71 @@ class create(commands.Cog):
 
         try: user = await self.bot.fetch_user(user_id=user)
         except: return await ctx.send(hidden=True, content="유저를 찾을 수 없습니다.")
-        await ctx.send(f"{user.id}, {user}")
 
-    @cog_ext.cog_context_menu(target=ContextMenuType.USER, name="생성")
-    async def ang(self, ctx: MenuContext):
-        await ctx.send(f'`ID: {ctx.target_author.id}, TAG: {ctx.target_author}`')
+        await cur.execute("SELECT channel FROM cloud_service where user_id = ?", (user.id,))
+        null_check = await cur.fetchone()
+
+        if null_check:
+            temp_value = create_actionrow(
+                create_button(
+                    style=ButtonStyle.URL,
+                    label="채널 바로가기",
+                    url=f"https://discord.com/channels/{load_j['sub_guild']}/{null_check[0]}"
+                )
+            )
+            return await ctx.send(hidden=True, content="이미 유저의 문의가 열려있습니다.", components=[temp_value])
+
+        msg = await ctx.send(content=f"{ctx.author.mention},", components=[create_select_value, cancel_bt])
+        try:
+            select_ctx: ComponentContext = await wait_for_component(self.bot, components=[create_select_value], timeout=30)
+        except TimeoutError:
+            try:
+                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
+            except discord.errors.Notfound:
+                return
+
+        await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", (select_ctx.selected_options[0],))
+        category_id = await cur.fetchone()
+
+        guild = self.bot.get_guild(id=load_j['main_guild'])
+        category = self.bot.get_channel(id=category_id[0])
+
+        guild_member = guild.get_member(user_id=user.id)
+        guild_nickname = guild_member.display_name
+
+        channel = await guild.create_text_channel(name=f"{user.name}-{user.discriminator}", category=category)
+        await cur.execute("INSERT INTO cloud_service(User_id, Channel, Message, Time, Type) VALUES(?, ?, ?, ?, ?)", (user.id, channel.id, "[관리자가 생성한 문의]", int(datetime.datetime.now().timestamp()), 2))
+
+        len_log = "N/A"
+
+        await cur.execute("SELECT * FROM cloud_log WHERE user_id = ?", (user.id,))
+        log_check = await cur.fetchone()
+
+        if log_check == None:
+            len_log = "사용자의 첫 문의 접수입니다."
+        else:
+            await cur.execute("SELECT count FROM cloud_log WHERE user_id = ?", (user.id,))
+            log_no = await cur.fetchone()
+
+            len_log = f"최근 **{log_no[0]}**건의 문의 기록이 있음. 기록을 확인할려면 `/로그`를 입력하세요."
+            
+    
+        scr_emb = discord.Embed(title=f"{user} ({user.id})", description=f"접수된 시간: <t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.blurple())
+
+        await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
+        await channel.send(content=f"닉네임: **{guild_nickname}**\n계정 생성: **<t:{int(guild_member.created_at.timestamp())}:R>**\n서버 가입: **<t:{int(guild_member.joined_at.timestamp())}:R>**\n{len_log}\n────────────────────────────────")
+        
+        temp_value = create_actionrow(
+            create_button(
+                style=ButtonStyle.URL,
+                label="생성된 채널 바로가기",
+                url=f"https://discord.com/channels/{load_j['sub_guild']}/{channel.id}"
+            )
+        )
+        await select_ctx.edit_origin(content=f"{ctx.author.mention}, **{user}**님의 문의가 생성되었습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`", components=[temp_value])
+        await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. (카테고리: {change_name(select_ctx.selected_options[0])})")
+
+        await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
 
 def setup(bot):
     bot.add_cog(create(bot))
