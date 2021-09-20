@@ -21,27 +21,25 @@ class log(commands.Cog):
 
     @cog_ext.cog_slash(
         name="로그",
-        description="문의 채널을 생성합니다.",
+        description="사용자의 문의 로그들을 확인합니다.",
         guild_ids=[load_j['sub_guild']],
-        options=[
-            create_option(
-                name="user",
-                description="문의 로그를 확인할 ID를 작성해주세요.",
-                option_type=3,
-                required=True
-            )
-        ]
     )
-    async def create_thred(self, ctx: SlashContext, user):
-        try: user = int(user)
-        except: return await ctx.send(hidden=True, content="유저의 ID를 적어주세요!")
-        
+    async def log_command(self, ctx: SlashContext, user):
         cur = await connect_db()
 
-        try: user = await self.bot.fetch_user(user_id=user)
+        await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+        channel = await cur.fetchone()
+
+        if channel == None or ctx.channel.id != channel[0]:
+            return await ctx.send(content=f"{ctx.author.mention}, `해당 채널은 문의 채널이 아닙니다!`")
+
+        await cur.execute("SELECT User_id FROM cloud_service WHERE Channel= ?", (ctx.channel.id,))
+        user_id = await cur.fetchone()
+
+        try: user = await self.bot.fetch_user(user_id=user_id[0])
         except: return await ctx.send(hidden=True, content="유저를 찾을 수 없습니다.")
 
-        await cur.exeucte("SELECT time, count FROM cloud_log WHERE user_id = ?", (user.id,))
+        await cur.execute("SELECT time, count FROM cloud_log WHERE user_id = ?", (user.id,))
         log_count = await cur.fetchall()
         
         log_list = []
