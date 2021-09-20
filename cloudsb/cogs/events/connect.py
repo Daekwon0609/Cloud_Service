@@ -3,7 +3,6 @@ import discord
 from datetime import date
 from discord.ext import commands
 from utils.check import check_config
-from discord_slash.utils.manage_commands import remove_all_commands
 
 class ready(commands.Cog):
     def __init__(self, bot):
