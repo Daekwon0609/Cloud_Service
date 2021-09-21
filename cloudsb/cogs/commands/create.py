@@ -40,7 +40,13 @@ class create(commands.Cog):
         cur = await connect_db()
 
         try: user = await self.bot.fetch_user(user_id=user)
-        except: return await ctx.send(hidden=True, content="유저를 찾을 수 없습니다.")
+        except: return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다. `(사용자: {user})`")
+
+        guild = self.bot.get_guild(id=load_j['main_guild'])
+        check_member = guild.get_member(user_id=user.id)
+
+        if check_member == None:
+            return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다. `(사용자: {user})`")
 
         await cur.execute("SELECT channel FROM cloud_service where user_id = ?", (user.id,))
         null_check = await cur.fetchone()
@@ -67,7 +73,6 @@ class create(commands.Cog):
         await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", (select_ctx.selected_options[0],))
         category_id = await cur.fetchone()
 
-        guild = self.bot.get_guild(id=load_j['main_guild'])
         category = self.bot.get_channel(id=category_id[0])
 
         guild_member = guild.get_member(user_id=user.id)
@@ -103,7 +108,7 @@ class create(commands.Cog):
             )
         )
         await select_ctx.edit_origin(content=f"{ctx.author.mention}, **{user}**님의 문의가 생성되었습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`", components=[temp_value])
-        await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. (카테고리: {change_name(select_ctx.selected_options[0])})")
+        await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
 
         await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
 

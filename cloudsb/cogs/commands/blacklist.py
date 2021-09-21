@@ -35,7 +35,7 @@ class blacklist(commands.Cog):
         user = self.bot.get_user(id=user_id[0])
         
         if user == None: 
-            return await ctx.send(f"유저를 찾을 수 없습니다. `(값: {user})`")
+            return await ctx.send(f"유저를 찾을 수 없습니다. `(사용자: {user})`")
         
         await cur.execute("SELECT user_id FROM cloud_blacklist WHERE user_id = ?", (user.id,))
         user_same = await cur.fetchone()

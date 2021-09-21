@@ -22,3 +22,12 @@ def change_type(value):
         value = "카테고리"
     
     return value
+
+def AM_PM(value):
+    am_pm = value
+    if am_pm == "AM":
+        am_pm = "오전"
+    elif am_pm == "PM":
+        am_pm = "오후"
+
+    return am_pm

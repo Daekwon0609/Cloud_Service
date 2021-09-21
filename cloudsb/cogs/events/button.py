@@ -73,7 +73,7 @@ class button(commands.Cog):
             await cur.execute("SELECT User_id FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
             queue_cancel = await cur.fetchone()
 
-            if queue_cancel is None:
+            if queue_cancel == None:
                 return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', components=None, embed=None)
             else:
                 await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
@@ -85,7 +85,7 @@ class button(commands.Cog):
             await cur.execute("SELECT Type FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
             queue_service = await cur.fetchone()
 
-            if queue_service is None:
+            if queue_service == None:
                 return await ctx.edit_origin(content=f'{ctx.author.mention}, `비 정상적인 행동이 감지되어 취소되었습니다.`', components=None, embed=None)
             elif queue_service[0] == 2:
                 await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))

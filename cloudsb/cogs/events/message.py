@@ -30,7 +30,7 @@ class message(commands.Cog):
                 await cur.execute("SELECT Type FROM cloud_service WHERE User_id = ?", (message.author.id,))
                 service_type = await cur.fetchone()
 
-                if service_type is None:
+                if service_type == None:
                     pass
                 elif service_type[0] == 1:
                     return await message.channel.send("`선택하지 않은 버튼이 있습니다!`", delete_after=5)
@@ -141,10 +141,13 @@ class message(commands.Cog):
                         if len(message.attachments) != 0:
                             if len(message.content) == 0:
                                 message.content = "**N/A**"
-                            return await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
-                        
+                            await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                            user_sent_msg = await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                            return await cur.execute("UPDATE cloud_service SET Last_Message = ? WHERE Channel = ?", (user_sent_msg.id, message.channel.id))
+
                         await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
-                        await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
+                        user_sent_msg = await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
+                        await cur.execute("UPDATE cloud_service SET Last_Message = ? WHERE Channel = ?", (user_sent_msg.id, message.channel.id))
                     
     
 def setup(bot):
