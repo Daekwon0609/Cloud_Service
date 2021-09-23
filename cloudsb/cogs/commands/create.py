@@ -81,7 +81,7 @@ class create(commands.Cog):
         channel = await guild.create_text_channel(name=f"{user.name}-{user.discriminator}", category=category)
         await cur.execute("INSERT INTO cloud_service(User_id, Channel, Message, Time, Type) VALUES(?, ?, ?, ?, ?)", (user.id, channel.id, "[관리자가 생성한 문의]", int(datetime.datetime.now().timestamp()), 2))
 
-        len_log = "N/A"
+        len_log = None
 
         await cur.execute("SELECT * FROM cloud_log WHERE user_id = ?", (user.id,))
         log_check = await cur.fetchone()

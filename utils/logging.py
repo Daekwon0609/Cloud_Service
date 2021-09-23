@@ -16,6 +16,8 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
             elif message.content.startswith("닉네임:"):
                 message_content = replace_all(message.content, badwords)
                 LOGS.append(f"\n\n{message_content}")
+            elif not "[" in message.content:
+                pass 
             else:
                 message_content = replace_all(message.content, badwords)
                 LOGS.append(f"\n[{time}] {message_content}")
@@ -35,7 +37,7 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
     log_check = await cur.fetchone()
 
     if log_check == None:
-        await cur.execute("INSERT INTO cloud_log(user_id, time, count) values(?, ?, ?)", (user.id, int(datetime.datetime.now().timestamp()), 1))
+        await cur.execute("INSERT INTO cloud_log(user_id, count) values(?, ?)", (user.id, 1))
     else:
         await cur.execute("UPDATE cloud_log SET count = count + ? WHERE user_id = ?", (1, user.id))
 

@@ -23,9 +23,9 @@ class log(commands.Cog):
     @cog_ext.cog_slash(
         name="로그",
         description="사용자의 문의 로그들을 확인합니다.",
-        guild_ids=[load_j['sub_guild']],
+        guild_ids=[load_j['sub_guild']]
     )
-    async def log_command(self, ctx: SlashContext, user):
+    async def log_command(self, ctx: SlashContext):
         cur = await connect_db()
 
         await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
@@ -38,7 +38,7 @@ class log(commands.Cog):
         user_id = await cur.fetchone()
 
         try: user = await self.bot.fetch_user(user_id=user_id[0])
-        except: return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다. `(사용자: {user})`")
+        except: return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다.")
 
         await cur.execute("SELECT count FROM cloud_log WHERE user_id = ?", (user.id,))
         log_count = await cur.fetchone()
@@ -50,18 +50,29 @@ class log(commands.Cog):
         for file in os.listdir("db/log/"):
             if file.startswith(f"{str(user.id)}"):
                 file_label = datetime.datetime.fromtimestamp((os.path.getctime(filename=f'db/log/{file}')))
-                AM_PM_value = file_label.strftime(f'%p')
+                AM_PM_value = file_label.strftime('%p')
                 file_label_strp = file_label.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value)} %I:%M')
 
-                log_list_value = create_select_option(label=file_label_strp, value=f"{(file[:-4])[-1]}")
+                log_list_value = create_select_option(label="종료 시각: " + file_label_strp, value=f"{(file[:-4])[-1]}")
                 log_list.append(log_list_value)
 
-        select_log = create_actionrow(
-            create_select(
-                options=log_list,
-                placeholder="확인할 로그를 선택해주세요.",
+        select_log = None
+        if len(log_list) >= 5:
+            select_log = create_actionrow(
+                create_select(
+                    options=log_list,
+                    placeholder="최대 5개, 고른 순서대로 불러옵니다.",
+                    min_values=1,
+                    max_values=5,
+                )
             )
-        )
+        elif len(log_list) < 5:
+            select_log = create_actionrow(
+                create_select(
+                    options=log_list,
+                    placeholder="확인할 로그를 선택해주세요.",
+                )
+            )
         msg = await ctx.send(content=f"{ctx.author.mention},", components=[select_log, cancel_bt])
         try:
             select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_log], timeout=30)

@@ -53,6 +53,7 @@ class move(commands.Cog):
                 return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
             except discord.errors.Notfound:
                 return
+                
         new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
         await ctx.channel.edit(category=new_category)

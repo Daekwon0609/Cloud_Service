@@ -142,12 +142,10 @@ class message(commands.Cog):
                             if len(message.content) == 0:
                                 message.content = "**N/A**"
                             await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
-                            user_sent_msg = await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
-                            return await cur.execute("UPDATE cloud_service SET Last_Message = ? WHERE Channel = ?", (user_sent_msg.id, message.channel.id))
+                            await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
 
                         await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
-                        user_sent_msg = await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
-                        await cur.execute("UPDATE cloud_service SET Last_Message = ? WHERE Channel = ?", (user_sent_msg.id, message.channel.id))
+                        await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
                     
     
 def setup(bot):

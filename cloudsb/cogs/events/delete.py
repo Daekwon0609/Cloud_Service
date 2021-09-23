@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from utils.db import connect_db
+from utils.change import AM_PM
 
 class delete(commands.Cog):
     def __init__(self, bot):
@@ -25,13 +26,14 @@ class delete(commands.Cog):
 
         dm_channel = await user.create_dm()
 
-        await cur.execute("SELECT Last_Message FROM cloud_service WHERE Channel = ?", (payload.channel_id,))
-        last = await cur.fetchone()
-
-        async for msg in dm_channel.history():
-            if msg.content == payload.cached_message.content and msg.id == last[0]:
-                await msg.delete()
-                await self.bot.get_channel(id=payload.channel_id).send(f"**[시스템]:** `메시지가 삭제되었습니다.` ({msg.content})")
+        async for dm_msg in dm_channel.history():
+            AM_PM_value1 = dm_msg.created_at.strftime('%p')
+            AM_PM_value2 = payload.cached_message.created_at.strftime('%p')
+            if  dm_msg.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value1)} %I:%M') == payload.cached_message.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value2)} %I:%M') and dm_msg.content == payload.cached_message.content:
+                await dm_msg.delete()
+                await self.bot.get_channel(id=payload.channel_id).send(f"**[시스템]:** 메시지가 삭제되었습니다. ({dm_msg.content})")
+            else:
+                return
 
 def setup(bot):
     bot.add_cog(delete(bot))
