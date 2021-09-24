@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 from utils.db import connect_db
@@ -10,6 +9,9 @@ class delete(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload):
+        if payload.cached_message.content == "@everyone":
+            return
+            
         cur = await connect_db()
 
         await cur.execute("SELECT * FROM cloud_service WHERE Channel = ?", (payload.channel_id,))
@@ -24,12 +26,13 @@ class delete(commands.Cog):
         try: user = await self.bot.fetch_user(user_id=user_data[0])
         except: return
 
-        dm_channel = await user.create_dm()
-
+        try: dm_channel = await user.create_dm()
+        except: return
+        
         async for dm_msg in dm_channel.history():
             AM_PM_value1 = dm_msg.created_at.strftime('%p')
             AM_PM_value2 = payload.cached_message.created_at.strftime('%p')
-            if  dm_msg.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value1)} %I:%M') == payload.cached_message.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value2)} %I:%M') and dm_msg.content == payload.cached_message.content:
+            if dm_msg.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value1)} %I:%M') == payload.cached_message.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value2)} %I:%M') and dm_msg.content == payload.cached_message.content:
                 await dm_msg.delete()
                 await self.bot.get_channel(id=payload.channel_id).send(f"**[시스템]:** 메시지가 삭제되었습니다. ({dm_msg.content})")
             else:

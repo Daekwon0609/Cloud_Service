@@ -115,8 +115,13 @@ class message(commands.Cog):
                     self_channel = self.bot.get_channel(id=channel[0])
                     if self_channel == None:
                         return await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (channel[0],))
-                    if message.channel.id == self_channel.id:
 
+                    await cur.execute("SELECT Type FROM cloud_service WHERE Channel = ?", (message.channel.id,))
+                    service_type = await cur.fetchone()
+
+                    if service_type[0] == 3:
+                        return
+                    elif message.channel.id == self_channel.id:
                         sub_guild = self.bot.get_guild(id=load_j['sub_guild'])
                         role_name = sub_guild.get_member(user_id=message.author.id).roles
 

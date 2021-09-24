@@ -17,7 +17,6 @@ class blacklist(commands.Cog):
     @cog_ext.cog_slash(
         name="블랙리스트",
         description="고객센터 블랙리스트를 지정합니다.",
-        default_permission=False,
         guild_ids=[load_j['sub_guild']]
     )
     async def blacklist(self, ctx: SlashContext):        

@@ -1,4 +1,4 @@
-from discord_slash.client import SlashCommand
+import discord
 from discord.ext import commands
 
 class error(commands.Cog):
@@ -12,6 +12,8 @@ class error(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             pass
         elif isinstance(error, commands.MissingRequiredArgument):
+            pass
+        elif isinstance(error, discord.errors.HTTPException):
             pass
         raise error
 

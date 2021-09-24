@@ -108,9 +108,9 @@ class create(commands.Cog):
             )
         )
         await select_ctx.edit_origin(content=f"{ctx.author.mention}, **{user}**님의 문의가 생성되었습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`", components=[temp_value])
-        await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
-
-        await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
+        try: await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
+        except: pass
+        finally: await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
 
 def setup(bot):
     bot.add_cog(create(bot))
