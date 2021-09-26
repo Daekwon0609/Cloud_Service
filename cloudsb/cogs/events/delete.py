@@ -9,9 +9,7 @@ class delete(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload):
-        if payload.cached_message.content == "@everyone":
-            return
-            
+
         cur = await connect_db()
 
         await cur.execute("SELECT * FROM cloud_service WHERE Channel = ?", (payload.channel_id,))
@@ -19,7 +17,13 @@ class delete(commands.Cog):
 
         if check_channel == None:
             return
-        
+
+        if payload.cached_message == None:
+            return
+        elif payload.cached_message.content.startswith(("**[유저", "**[시스템")):
+            return
+
+
         await cur.execute("SELECT User_id FROM cloud_service WHERE Channel = ?", (payload.channel_id,))
         user_data = await cur.fetchone()
 
@@ -29,7 +33,7 @@ class delete(commands.Cog):
         try: dm_channel = await user.create_dm()
         except: return
         
-        async for dm_msg in dm_channel.history():
+        async for dm_msg in dm_channel.history(limit=1000):
             AM_PM_value1 = dm_msg.created_at.strftime('%p')
             AM_PM_value2 = payload.cached_message.created_at.strftime('%p')
             if dm_msg.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value1)} %I:%M') == payload.cached_message.created_at.strftime(f'%Y.%m.%d. {AM_PM(AM_PM_value2)} %I:%M') and dm_msg.content == payload.cached_message.content:

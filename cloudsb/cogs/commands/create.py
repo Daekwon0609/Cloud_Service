@@ -36,8 +36,6 @@ class create(commands.Cog):
     async def create_thred(self, ctx: SlashContext, user):
         try: user = int(user)
         except: return await ctx.send(hidden=True, content="유저의 ID를 적어주세요!")
-        
-        cur = await connect_db()
 
         try: user = await self.bot.fetch_user(user_id=user)
         except: return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다. `(사용자: {user})`")
@@ -47,6 +45,8 @@ class create(commands.Cog):
 
         if check_member == None:
             return await ctx.send(hidden=True, content=f"유저를 찾을 수 없습니다. `(사용자: {user})`")
+        
+        cur = await connect_db()
 
         await cur.execute("SELECT channel FROM cloud_service where user_id = ?", (user.id,))
         null_check = await cur.fetchone()
