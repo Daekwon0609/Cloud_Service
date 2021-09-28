@@ -1,7 +1,5 @@
 import asyncio
 import discord
-import os
-import datetime
 
 from asyncio import TimeoutError
 
@@ -11,10 +9,8 @@ from discord_slash.utils.manage_components import wait_for_component
 from discord_slash.context import ComponentContext
 from discord.ext import commands
 
-from utils.json import load_j
 from utils.db import connect_db
 from utils.button_list import *
-from utils.change import change_name
 from utils.logging import Add_log
 
 class button(commands.Cog):

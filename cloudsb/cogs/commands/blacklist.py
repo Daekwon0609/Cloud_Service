@@ -1,8 +1,7 @@
 import discord
 import datetime
 
-from discord_slash.utils.manage_commands import create_permission, create_option
-from discord_slash.model import SlashCommandPermissionType
+from discord_slash.utils.manage_commands import create_option
 from discord_slash import SlashContext, cog_ext
 
 from utils.json import load_j

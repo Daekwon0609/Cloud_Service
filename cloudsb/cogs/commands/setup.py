@@ -2,10 +2,9 @@ import discord
 
 from discord_slash.utils.manage_commands import create_option, create_permission, create_choice
 
-from discord_slash.model import SlashCommandPermissionType, ContextMenuType
+from discord_slash.model import SlashCommandPermissionType
 
 from discord_slash import cog_ext, SlashContext
-from discord_slash.context import MenuContext
 
 from utils.db import connect_db
 from utils.change import change_name, change_type

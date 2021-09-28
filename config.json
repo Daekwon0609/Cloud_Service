@@ -1,7 +1,7 @@
 {
     "main_guild": 1234,
     "sub_guild": 1234,
-    "token": "TOKEN",
+    "token": "토큰",
 
     "setup_role": 1234,
     "blacklist_role": 1234,
