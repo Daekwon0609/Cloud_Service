@@ -1,10 +1,10 @@
 {
-    "main_guild": 855722532107059221,
-    "sub_guild": 855722532107059221,
-    "token": "ODY3NDM5NzEyMzM1NjkxODE2.YPhILw.yGiW3fEdNXgrg9-tFejZzky0raA",
+    "main_guild": 1234,
+    "sub_guild": 1234,
+    "token": "TOKEN",
 
-    "setup_role": 877267662223323176,
-    "blacklist_role": 877267662223323176,
+    "setup_role": 1234,
+    "blacklist_role": 1234,
 
     "Admin_Role_name": [
         "운영자",
