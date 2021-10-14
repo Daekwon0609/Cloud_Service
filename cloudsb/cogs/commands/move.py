@@ -10,7 +10,6 @@ from discord_slash import cog_ext, SlashContext
 from utils.db import connect_db
 from utils.json import load_j
 from utils.button_list import *
-from utils.system_log import log_pr
 
 from discord.ext import commands
 

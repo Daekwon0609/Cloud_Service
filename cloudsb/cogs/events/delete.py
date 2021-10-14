@@ -2,7 +2,6 @@ from discord.ext import commands
 
 from utils.db import connect_db
 from utils.change import AM_PM
-from utils.system_log import log_pr
 
 class delete(commands.Cog):
     def __init__(self, bot):

@@ -1,6 +1,5 @@
 import discord
 import datetime
-from datetime import date
 
 from asyncio import TimeoutError
 

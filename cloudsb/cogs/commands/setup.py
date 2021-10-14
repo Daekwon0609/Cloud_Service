@@ -9,7 +9,6 @@ from discord_slash import cog_ext, SlashContext
 from utils.db import connect_db
 from utils.change import change_name, change_type
 from utils.json import load_j
-from utils.system_log import log_pr
 
 from discord.ext import commands
 
