@@ -4,7 +4,6 @@
     "token": "토큰",
 
     "setup_role": 1234,
-    "blacklist_role": 1234,
 
     "Admin_Role_name": [
         "운영자",
