@@ -69,7 +69,7 @@ class message(commands.Cog):
                 if category_id == None:
                     return
             
-                guild = self.bot.get_guild(id=load_j['main_guild'])
+                guild = self.bot.get_guild(id=load_j['sub_guild'])
                 category = self.bot.get_channel(id=category_id[0])
                     
                 guild_member = guild.get_member(user_id=message.author.id)
@@ -125,7 +125,7 @@ class message(commands.Cog):
                     await cur.execute("SELECT Type FROM cloud_service WHERE Channel = ?", (message.channel.id,))
                     service_type = await cur.fetchone()
 
-                    if service_type[0] == 3:
+                    if service_type[0] == 3 or service_type == None:
                         return
                     elif message.channel.id == self_channel.id:
                         sub_guild = self.bot.get_guild(id=load_j['sub_guild'])
