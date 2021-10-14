@@ -36,7 +36,7 @@ class button(commands.Cog):
 
                 await Add_log(ctx.channel, user, ctx.author, self.bot, False)
                 await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
-                await log_pr(f"문의 종료: {ctx.channel.name} ({ctx.channel.id})")
+                await log_pr(f"문의 종료: 채널 - {ctx.channel.name} ({ctx.channel.id})")
                 await ctx.channel.delete()
             else:
                 user = self.bot.get_user(id=user_id[0])
@@ -47,7 +47,7 @@ class button(commands.Cog):
 
                 await Add_log(ctx.channel, user, ctx.author, self.bot, True)
                 await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
-                await log_pr(f"문의 종료: {ctx.channel.name} ({ctx.channel.id})")
+                await log_pr(f"문의 종료: 채널 - {ctx.channel.name} ({ctx.channel.id})")
                 await ctx.channel.delete()
 
                 await user.send("`문의가 종료되었습니다.`")

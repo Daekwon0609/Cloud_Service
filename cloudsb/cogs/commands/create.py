@@ -79,7 +79,9 @@ class create(commands.Cog):
         guild_member = guild.get_member(user_id=user.id)
         guild_nickname = guild_member.display_name
 
-        channel = await guild.create_text_channel(name=f"{user.name}-{user.discriminator}", category=category)
+        guild2 = self.bot.get_guild(id=load_j['sub_guild'])
+
+        channel = await guild2.create_text_channel(name=f"{user.name}-{user.discriminator}", category=category)
         await cur.execute("INSERT INTO cloud_service(User_id, Channel, Message, Time, Type) VALUES(?, ?, ?, ?, ?)", (user.id, channel.id, "[관리자가 생성한 문의]", int(datetime.datetime.now().timestamp()), 2))
 
         len_log = None
