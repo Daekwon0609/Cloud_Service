@@ -76,9 +76,7 @@ class create(commands.Cog):
 
         category = self.bot.get_channel(id=category_id[0])
 
-        guild2 = self.bot.get_guild(id=load_j['sub_guild'])
-
-        guild_member = guild2.get_member(user_id=user.id)
+        guild_member = guild.get_member(user_id=user.id)
         guild_nickname = guild_member.display_name
 
         channel = await guild.create_text_channel(name=f"{user.name}-{user.discriminator}", category=category)
