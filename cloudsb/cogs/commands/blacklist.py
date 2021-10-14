@@ -6,6 +6,7 @@ from discord_slash import SlashContext, cog_ext
 
 from utils.json import load_j
 from utils.db import connect_db 
+from utils.system_log import log_pr
 
 from discord.ext import commands
 
@@ -47,8 +48,9 @@ class blacklist(commands.Cog):
         
         await cur.execute("INSERT INTO cloud_blacklist(user_id, time) values(?, ?)", (user.id, int(datetime.datetime.now().timestamp())))
 
-        blacklist_emb = discord.Embed(title="BLACKLIST - COMMAND", description=f"등록 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.red())
+        blacklist_emb = discord.Embed(title="블랙리스트 등록", description=f"등록 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.red())
         
+        await log_pr(f"블랙리스트 등록: {user} ({user.id})")
         await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
 
     @cog_ext.cog_subcommand(
@@ -92,9 +94,11 @@ class blacklist(commands.Cog):
             elif user_same[0] == user.id:
                 await cur.execute("DELETE FROM cloud_blacklist WHERE User_id = ?", (user.id,))
 
-                blacklist_emb = discord.Embed(title="BLACKLIST DISABLE - COMMAND", description=f"해제 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.green())
+                blacklist_emb = discord.Embed(title="블랙리스트 해제", description=f"해제 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.green())
                 
+                await log_pr(f"블랙리스트 해제: {user} ({user.id})")
                 return await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
+                
         else:
         
             try: user = int(user)
@@ -119,13 +123,10 @@ class blacklist(commands.Cog):
             elif user_same[0] == user.id:
                 await cur.execute("DELETE FROM cloud_blacklist WHERE User_id = ?", (user.id,))
 
-                blacklist_emb = discord.Embed(title="BLACKLIST DISABLE - COMMAND", description=f"해제 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.green())
+                blacklist_emb = discord.Embed(title="블랙리스트 해제", description=f"해제 시간: <t:{int(datetime.datetime.now().timestamp())}>\n\n유저: {user.mention} (**{user.id}**)", color=discord.Colour.green())
                 
-                await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)
-
-
-
-    
+                await log_pr(f"블랙리스트 해제: {user} ({user.id})")
+                await ctx.send(content=f"{ctx.author.mention},", embed=blacklist_emb)    
 
 def setup(bot):
     bot.add_cog(blacklist(bot))

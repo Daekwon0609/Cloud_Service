@@ -5,6 +5,7 @@ from discord_slash import cog_ext, SlashContext
 from utils.json import load_j
 from utils.db import connect_db
 from utils.logging import Add_log
+from utils.system_log import log_pr
 
 from discord.ext import commands
 
@@ -40,6 +41,8 @@ class close(commands.Cog):
 
             await Add_log(ctx.channel, user, ctx.author, self.bot, False)
             await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+            await log_pr(f"문의 종료: {ctx.channel.name} ({ctx.channel.id}))")
+
             return await ctx.channel.delete()
         else:
             await cur.execute("SELECT User_id FROM cloud_service WHERE Channel= ?", (ctx.channel.id,))
@@ -51,10 +54,11 @@ class close(commands.Cog):
 
             await asyncio.sleep(5)
 
-            await Add_log(ctx.channel, user, ctx.author, self.bot,)
+            await Add_log(ctx.channel, user, ctx.author, self.bot, True)
             await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
+            await log_pr(f"문의 종료: {ctx.channel.name} ({ctx.channel.id})")
             await ctx.channel.delete()
-
+            
             await user.send("`문의가 종료되었습니다.`")
 
 def setup(bot):

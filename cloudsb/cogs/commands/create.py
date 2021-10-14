@@ -15,6 +15,7 @@ from utils.db import connect_db
 from utils.change import change_name
 from utils.button_list import create_select_value, cancel_bt, scr_bt
 from utils.json import load_j
+from utils.system_log import log_pr
 
 class create(commands.Cog):
     def __init__(self, bot):
@@ -110,7 +111,7 @@ class create(commands.Cog):
         await select_ctx.edit_origin(content=f"{ctx.author.mention}, **{user}**님의 문의가 생성되었습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`", components=[temp_value])
         try: await user.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
         except: pass
-        finally: await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
+        finally: await log_pr(f"문의 생성(임의): {channel.name} ({channel.id})"); await channel.send(f"**[시스템]:** 관리자가 문의를 임의로 생성하였습니다. `(카테고리: {change_name(select_ctx.selected_options[0])})`")
 
 def setup(bot):
     bot.add_cog(create(bot))

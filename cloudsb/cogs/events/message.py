@@ -13,6 +13,7 @@ from utils.change import change_name
 
 from utils.button_list import *
 from utils.json import *
+from utils.system_log import log_pr
 
 from discord.ext import commands
 
@@ -42,7 +43,7 @@ class message(commands.Cog):
 
                     if channel == None:
                         await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
-                        pass
+                        return await message.channel.send("`알 수 없는 오류로 인해 취소되었습니다. 다시 입력해주세요.`", delete_after=5)
 
                     if len(message.attachments) != 0:
                         if len(message.content) == 0:
@@ -53,20 +54,25 @@ class message(commands.Cog):
                 
                 await cur.execute("INSERT INTO cloud_service(User_id, Message, Time, Type) VALUES(?, ?, ?, ?)", (message.author.id, message.content, int(datetime.datetime.now().timestamp()), 1))
 
-                msg = await message.channel.send(content="`문의할 주제를 선택해주세요.`", components=[service_buttons_1])
+                embed = discord.Embed(title="문의 주제를 선택해주세요.", description='**문의 시작 전 읽어주세요**\n*문의는 항시 기록되며 삭제할 수 없습니다.*\n*한번 선택한 주제는 문의가 끝날 때 까지 변경할 수 없습니다.*', color=0xffffff)
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/897152160830218292/897152218795479091/logo1.png")
 
+                msg = await message.channel.send(embed=embed, components=[service_buttons_1])
                 try:
-                    ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=30)
+                    ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=60)
                 except TimeoutError:
-                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=None, embed=None)
+                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", file=None, components=None, embed=None)
                     return await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
 
                 await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", (ctx.component_id,))
                 category_id = await cur.fetchone()
+
+                if category_id == None:
+                    return
             
                 guild = self.bot.get_guild(id=load_j['main_guild'])
                 category = self.bot.get_channel(id=category_id[0])
-
+                    
                 guild_member = guild.get_member(user_id=message.author.id)
                 guild_nickname = guild_member.display_name
 
@@ -77,6 +83,7 @@ class message(commands.Cog):
                 suf_emb.add_field(name="문의 종류", value=str(change_name(ctx.component_id)), inline=False)
 
                 await ctx.edit_origin(content=None, embed=suf_emb, components=None)
+                await log_pr(f"문의 생성: {channel.name} ({channel.id})")
 
                 len_log = "N/A"
 
@@ -100,9 +107,9 @@ class message(commands.Cog):
                 if len(message.attachments) != 0:
                     if len(message.content) == 0:
                         message.content = "**N/A**"
-                    return await channel.send(f"**{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                    return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
 
-                return await channel.send(f"**{message.author.name}:** {message.content}")
+                return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}")                
             else:
                 cur = await connect_db()
 

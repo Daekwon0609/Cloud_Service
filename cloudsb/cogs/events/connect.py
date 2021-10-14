@@ -35,6 +35,7 @@ class ready(commands.Cog):
             print(f"───────────────────────────────────────\nIn use: Cloud RP\nConnection with the server is complete.")
             print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
             print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
+            print(f"───────────────────────────────────────")
 
 def setup(bot):
     bot.add_cog(ready(bot))

@@ -15,6 +15,7 @@ from utils.db import connect_db
 from utils.json import load_j
 from utils.button_list import cancel_bt
 from utils.change import AM_PM
+from utils.system_log import log_pr
 
 class log(commands.Cog):
     def __init__(self, bot):

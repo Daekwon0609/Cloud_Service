@@ -9,6 +9,7 @@ from discord_slash import cog_ext, SlashContext
 from utils.db import connect_db
 from utils.change import change_name, change_type
 from utils.json import load_j
+from utils.system_log import log_pr
 
 from discord.ext import commands
 
@@ -89,7 +90,7 @@ class setupa(commands.Cog):
 
         categories = change_name(categories)
 
-        setup_emb = discord.Embed(title="SETUP - COMMAND", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 아이디: **{category.id}**")
+        setup_emb = discord.Embed(title="기본 설정", description=f"`/정보` 로 전체 확인이 가능합니다.\n\n바꾼 카테고리 종류: **[{categories}]**\n바꾼 아이디: **{category.id}**")
         
         await ctx.send(content=f"{ctx.author.mention},", embed=setup_emb)
 
@@ -109,7 +110,7 @@ class setupa(commands.Cog):
         }
     )
     async def setupinfo(self, ctx: SlashContext):
-        setup_emb = discord.Embed(title="SETUP - INFO", description="`/정보` 으로 다시 설정할 수 있습니다.")
+        setup_emb = discord.Embed(title="설정 정보", description="`/정보` 으로 다시 설정할 수 있습니다.")
         cur = await connect_db()
                 
         await cur.execute("SELECT Category, Type FROM cloud_setup")

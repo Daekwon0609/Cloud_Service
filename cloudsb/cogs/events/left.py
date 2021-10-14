@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 from utils.db import connect_db
+from utils.system_log import log_pr
 
 class left(commands.Cog):
     def __init__(self, bot):
