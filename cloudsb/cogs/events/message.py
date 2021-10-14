@@ -128,7 +128,7 @@ class message(commands.Cog):
                     if service_type[0] == 3 or service_type == None:
                         return
                     elif message.channel.id == self_channel.id:
-                        
+
                         if message.content.startswith("!"):
                             return
 
@@ -162,6 +162,5 @@ class message(commands.Cog):
                         await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
                         await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
                     
-    
 def setup(bot):
     bot.add_cog(message(bot))
