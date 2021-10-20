@@ -109,7 +109,7 @@ class setupa(commands.Cog):
         }
     )
     async def setupinfo(self, ctx: SlashContext):
-        setup_emb = discord.Embed(title="설정 정보", description="`/정보` 으로 다시 설정할 수 있습니다.")
+        setup_emb = discord.Embed(title="설정 정보", description="`/설정` 으로 다시 설정할 수 있습니다.")
         cur = await connect_db()
                 
         await cur.execute("SELECT Category, Type FROM cloud_setup")
