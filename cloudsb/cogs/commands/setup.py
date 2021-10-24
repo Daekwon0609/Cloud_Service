@@ -49,7 +49,7 @@ class setupa(commands.Cog):
             ),
             create_option(
                 name="category",
-                description="설정할 카테고리의 이름을 작성하거나, 선택해주세요. (ex. 카테고리 이름)",
+                description="설정할 카테고리의 이름을 작성하거나, 선택해주세요. (목록에 나오지 않는 것은 따로 적어주시면 나옵니다.)",
                 option_type=7,
                 required=True
             )

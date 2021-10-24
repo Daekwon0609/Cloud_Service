@@ -27,6 +27,12 @@ class message(commands.Cog):
             if not message.guild:
                 cur = await connect_db()
 
+                await cur.execute("SELECT * FROM cloud_blacklist WHERE User_id = ?", (message.author.id,))
+                blacklist_user_check = await cur.fetchone()
+
+                if bool(blacklist_user_check):
+                    return await message.channel.send(f"`{message.author}님은 블랙리스트에 지정되어 문의할 수 없습니다.`")
+
                 await cur.execute("SELECT Type FROM cloud_service WHERE User_id = ?", (message.author.id,))
                 service_type = await cur.fetchone()
 
@@ -127,8 +133,19 @@ class message(commands.Cog):
                     await cur.execute("SELECT Type FROM cloud_service WHERE Channel = ?", (message.channel.id,))
                     service_type = await cur.fetchone()
 
-                    if service_type[0] == 3 or service_type == None:
-                        return
+                    await cur.execute("SELECT User_id FROM cloud_service WHERE Channel = ?", (message.channel.id,))
+                    exam_us_id = await cur.fetchone()
+
+                    await cur.execute("SELECT * FROM cloud_blacklist WHERE User_id = ?", (exam_us_id[0],))
+                    blacklist_user_check = await cur.fetchone()
+
+                    if bool(blacklist_user_check):
+                        return await message.channel.send(f"**[시스템]:** 문의하는 사용자가 블랙리스트에 지정되어 메시지를 보낼 수 없습니다.")
+                    
+                    if service_type[0] == None:
+                        return await message.channel.send("**[시스템]:** 시스템 오류가 발생하였습니다. 채널을 삭제해주세요.")
+                    elif service_type[0] == 3:
+                        return await message.channel.send("**[시스템]:** 사용자가 서버를 나깄습니다. `/종료`를 하시거나, `종료하기` 버튼을 눌러주세요")
                     elif message.channel.id == self_channel.id:
 
                         if message.content.startswith("!"):
