@@ -4,30 +4,19 @@ def replace_all(text, dic):
     return text
 
 def change_name(value):
-    if value == "server_category":
-        value = "서버문의"
-    elif value == "support_category":
-        value = "후원문의"
-    elif value == "report_category":
-        value = "신고하기"
-    elif value == "log_channel":
-        value = "로그채널"
+    replace_value = {"server_category": "서버문의", "support_category": "후원문의", "report_category": "신고하기", "log_channel": "로그채널"}
+    value = replace_all(value, replace_value)
 
     return value
 
 def change_type(value):
-    if value == "log_channel":
-        value = "채널"
-    else:
-        value = "카테고리"
+    replace_value = {"log_channel": "채널", "server_category": "카테고리", "support_category": "카테고리", "report_category": "카테고리"}
+    value = replace_all(value, replace_value)
     
     return value
 
 def AM_PM(value):
-    am_pm = value
-    if am_pm == "AM":
-        am_pm = "오전"
-    elif am_pm == "PM":
-        am_pm = "오후"
+    replace_value = {"AM": "오전", "PM": "오후"}
+    am_pm = replace_all(value, replace_value)
 
     return am_pm
