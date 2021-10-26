@@ -89,6 +89,14 @@ class message(commands.Cog):
                 suf_emb = discord.Embed(title="문의가 정상적으로 접수되었습니다.", description=f"<t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.green())
                 suf_emb.add_field(name="문의 종류", value=str(change_name(ctx.component_id)), inline=False)
 
+                if len(message.attachments) != 0:
+                    if len(message.content) == 0:
+                        message.content = "**N/A**"
+                    suf_emb.add_field(name="첫 내용", value=message.content, inline=False)
+                    suf_emb.set_image(url=message.attachments[0].url)
+                else:
+                    suf_emb.add_field(name="첫 내용", value=message.content, inline=False)
+       
                 await ctx.edit_origin(content=None, embed=suf_emb, components=None)
                 await log_pr(f"문의 생성: 채널 - {channel.name} ({channel.id})")
 
