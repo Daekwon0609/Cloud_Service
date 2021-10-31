@@ -144,8 +144,8 @@ class message(commands.Cog):
                     await cur.execute("SELECT User_id FROM cloud_service WHERE Channel = ?", (message.channel.id,))
                     exam_us_id = await cur.fetchone()
 
-                    await cur.execute("SELECT * FROM cloud_blacklist WHERE User_id = ?", (exam_us_id[0],))
-                    blacklist_user_check = await cur.fetchone()
+                    try: await cur.execute("SELECT * FROM cloud_blacklist WHERE User_id = ?", (exam_us_id[0],)); blacklist_user_check = await cur.fetchone()
+                    except: pass
 
                     if bool(blacklist_user_check):
                         return await message.channel.send(f"**[시스템]:** 문의하는 사용자가 블랙리스트에 지정되어 메시지를 보낼 수 없습니다.")
