@@ -1,8 +1,10 @@
 import discord
+import asyncio
 
 from datetime import date
 from discord.ext import commands
 from utils.check import check_config
+from utils.restart import restart_system
 
 class ready(commands.Cog):
     def __init__(self, bot):
@@ -31,6 +33,9 @@ class ready(commands.Cog):
             print(f'문제 항목: {", ".join(value)}')
         else:
             await self.bot.change_presence(activity=discord.Game(name=f'DM을 통해 문의접수'), status=discord.Status.online)
+
+            loop = asyncio.get_event_loop()
+            await loop.create_task(restart_system())
 
             print(f"───────────────────────────────────────\nIn use: Cloud RP\nConnection with the server is complete.")
             print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")

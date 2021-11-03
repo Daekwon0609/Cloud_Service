@@ -14,11 +14,14 @@ class left(commands.Cog):
 
         if check_channel == None:
             return
+        try:
+            del_msg = await self.bot.get_channel(id=check_channel[0]).send("@everyone")
 
-        del_msg = await self.bot.get_channel(id=check_channel[0]).send("@everyone")
-        await del_msg.delete()
-
-        await self.bot.get_channel(id=check_channel[0]).send(f"**[시스템]:** 문의 진행 중에 사용자가 서버를 나갔습니다. ({member.mention})")
+        except:
+            pass
+        else:
+            await del_msg.delete()
+            await self.bot.get_channel(id=check_channel[0]).send(f"**[시스템]:** 문의 진행 중에 사용자가 서버를 나갔습니다. ({member.mention})")
         await cur.execute("UPDATE cloud_service SET Type = ? WHERE User_id = ?", (3, member.id))
 
 def setup(bot):
