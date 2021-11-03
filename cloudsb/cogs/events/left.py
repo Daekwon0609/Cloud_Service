@@ -22,6 +22,14 @@ class left(commands.Cog):
         else:
             await del_msg.delete()
             await self.bot.get_channel(id=check_channel[0]).send(f"**[시스템]:** 문의 진행 중에 사용자가 서버를 나갔습니다. ({member.mention})")
+
+        await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", ("log_channel",))
+        log_channel = await cur.fetchone()
+
+        log_channel = self.bot.get_channel(id=log_channel[0])
+
+        await log_channel.send(f"{member} ({member.id}) 님이 나갔습니다. (유저와 관련된 채널을 삭제해주세요.)")
+        
         await cur.execute("UPDATE cloud_service SET Type = ? WHERE User_id = ?", (3, member.id))
 
 def setup(bot):
