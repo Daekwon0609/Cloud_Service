@@ -34,13 +34,13 @@ class ready(commands.Cog):
         else:
             await self.bot.change_presence(activity=discord.Game(name=f'DM을 통해 문의접수'), status=discord.Status.online)
 
-            loop = asyncio.get_event_loop()
-            await loop.create_task(restart_system())
-
             print(f"───────────────────────────────────────\nIn use: Cloud RP\nConnection with the server is complete.")
             print(f"Copyright {date.today().year}. (github: https://github.com/Daekwon0609) all rights reserved.")
             print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
             print(f"───────────────────────────────────────")
+
+            loop = asyncio.get_event_loop()
+            await loop.create_task(restart_system())
 
 def setup(bot):
     bot.add_cog(ready(bot))
