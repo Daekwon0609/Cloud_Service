@@ -12,7 +12,7 @@ async def restart_system():
         if time == "2:30:0":
             os.system("start python -B -m cloudsb")
             os.system("cls")
-            print("[과부하 방지]시스템을 새로 다시 시작하였습니다.\n\n[과부하 방지] 창을 닫아주세요.")
+            print("[과부하 방지] 시스템을 새로 다시 시작하였습니다.\n\n[과부하 방지] 창을 닫아주세요.")
 
             return sys.exit(0)
 

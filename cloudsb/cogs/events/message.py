@@ -59,7 +59,7 @@ class message(commands.Cog):
                 
                 await cur.execute("INSERT INTO cloud_service(User_id, Message, Time, Type) VALUES(?, ?, ?, ?)", (message.author.id, message.content, int(datetime.datetime.now().timestamp()), 1))
 
-                embed = discord.Embed(title="문의 주제를 선택해주세요.", description='**문의 시작 전 읽어주세요**\n*문의는 항시 기록되며 삭제할 수 없습니다.*\n*한번 선택한 주제는 문의가 끝날 때 까지 변경할 수 없습니다.*', color=0xffffff)
+                embed = discord.Embed(title="문의 종류를 선택해주세요.", description='**문의 시작 전 읽어주세요**\n*ㆍ문의는 항시 기록되며 삭제할 수 없습니다.*\n*ㆍ한번 선택한 주제는 문의가 끝날 때 까지 변경할 수 없습니다.*\n*ㆍ운영진을 향한 욕설 또는 비하 발언 시 강력 제재합니다.*', color=0xffffff)
                 embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/897152160830218292/897152218795479091/logo1.png")
 
                 msg = await message.channel.send(embed=embed, components=[service_buttons_1])
@@ -92,10 +92,10 @@ class message(commands.Cog):
                 if len(message.attachments) != 0:
                     if len(message.content) == 0:
                         message.content = "**N/A**"
-                    suf_emb.add_field(name="첫 내용", value=message.content, inline=False)
+                    suf_emb.add_field(name="문의 내용", value=message.content, inline=False)
                     suf_emb.set_image(url=message.attachments[0].url)
                 else:
-                    suf_emb.add_field(name="첫 내용", value=message.content, inline=False)
+                    suf_emb.add_field(name="문의 내용", value=message.content, inline=False)
        
                 await ctx.edit_origin(content=None, embed=suf_emb, components=None)
                 await log_pr(f"문의 생성: 채널 - {channel.name} ({channel.id})")
