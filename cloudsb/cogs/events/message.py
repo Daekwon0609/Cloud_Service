@@ -64,7 +64,7 @@ class message(commands.Cog):
 
                 msg = await message.channel.send(embed=embed, components=[service_buttons_1])
                 try:
-                    ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=1)
+                    ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=60)
                 except TimeoutError:
                     await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=[timeout_buttons], embed=None)
                     return await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
