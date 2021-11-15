@@ -3,7 +3,7 @@ import asyncio
 
 from datetime import date
 from discord.ext import commands
-from utils.check import check_config
+from utils.check import check_config, check_channel
 from utils.restart import restart_system
 
 class ready(commands.Cog):
@@ -39,8 +39,7 @@ class ready(commands.Cog):
             print(f"───────────────────────────────────────\nbot: ({self.bot.user}, {self.bot.user.id})")
             print(f"───────────────────────────────────────")
 
-            loop = asyncio.get_event_loop()
-            await loop.create_task(restart_system())
+            await asyncio.gather(restart_system(), check_channel(self.bot))
 
 def setup(bot):
     bot.add_cog(ready(bot))

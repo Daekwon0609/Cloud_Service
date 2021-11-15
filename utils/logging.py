@@ -67,7 +67,7 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
         user_type = change_name(user_type[0])
         log_channel = bot.get_channel(id=log_channel[0])
 
-        await log_channel.send(content=f"**{user2}**님이 **{user}**님의 **{user_type} 타입**의 문의를 종료하였습니다. (`{channel.name}`, `{channel.id}`)", file=discord.File(fp=file, filename="log.txt"))
+        return await log_channel.send(content=f"**{user2}**님이 **{user}**님의 **{user_type} 타입**의 문의를 종료하였습니다. (`{channel.name}`, `{channel.id}`)", file=discord.File(fp=file, filename="log.txt"))
     else:
         cur = await connect_db()
         
@@ -76,5 +76,5 @@ async def Add_log(channel: discord.TextChannel, user: discord.User, user2: disco
 
         log_channel = bot.get_channel(id=log_channel[0])
 
-        await log_channel.send(f"**{user2}**님이 **나간 유저**의 **N/A 타입**의 문의를 종료하였습니다. (`{channel.name}`, `{channel.id}`)")
+        return await log_channel.send(f"**{user2}**님이 **나간 유저**의 **N/A 타입**의 문의를 종료하였습니다. (`{channel.name}`, `{channel.id}`)")
 

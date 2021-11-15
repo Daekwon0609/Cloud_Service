@@ -32,7 +32,7 @@ def load_extensions(bot: Cloudsb):
 
 
 def run(token: str):
-    bot = Cloudsb(command_prefix="v", intents=discord.Intents.all())
+    bot = Cloudsb(command_prefix="$", intents=discord.Intents.all())
     SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
     load_extensions(bot)
     bot.run(token)
