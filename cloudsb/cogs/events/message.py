@@ -84,7 +84,10 @@ class message(commands.Cog):
                 guild_nickname = guild_member.display_name
 
                 channel = await guild.create_text_channel(name=f"{message.author.name}-{message.author.discriminator}", category=category)
-                await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '{message.content}' WHERE User_id = '{message.author.id}'")
+                if message.content == "DF5218AGA85RFAS198FA51EFA":
+                    await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '테스트 문의' WHERE User_id = '{message.author.id}'")
+                else:
+                    await cur.execute(f"UPDATE cloud_service SET Channel = '{channel.id}', Type = 2, Message = '{message.content}' WHERE User_id = '{message.author.id}'")
                 
                 suf_emb = discord.Embed(title="문의가 정상적으로 접수되었습니다.", description=f"<t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.green())
                 suf_emb.add_field(name="문의 종류", value=str(change_name(ctx.component_id)), inline=False)
@@ -116,15 +119,20 @@ class message(commands.Cog):
             
                 scr_emb = discord.Embed(title=f"{ctx.author} ({ctx.author.id})", description=f"접수된 시간: <t:{int(datetime.datetime.now().timestamp())}:F>", color=discord.Colour.blurple())
 
-                await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
-                await channel.send(content=f"닉네임: **{guild_nickname}**\n계정 생성: **<t:{int(guild_member.created_at.timestamp())}:R>**\n서버 가입: **<t:{int(guild_member.joined_at.timestamp())}:R>**\n{len_log}\n────────────────────────────────")
-                
-                if len(message.attachments) != 0:
-                    if len(message.content) == 0:
-                        message.content = "**N/A**"
-                    return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                if message.content == "DF5218AGA85RFAS198FA51EFA":
+                    await channel.send(content="@테스트 문의", embed=scr_emb, components=[scr_bt])
+                    await channel.send(content=f"닉네임: **{guild_nickname}**\n계정 생성: **<t:{int(guild_member.created_at.timestamp())}:R>**\n서버 가입: **<t:{int(guild_member.joined_at.timestamp())}:R>**\n{len_log}\n────────────────────────────────")
+                    return await channel.send(f"**[시스템]:** 테스트 문의가 생성되었습니다.")    
+                else:
+                    await channel.send(content="@everyone", embed=scr_emb, components=[scr_bt])
+                    await channel.send(content=f"닉네임: **{guild_nickname}**\n계정 생성: **<t:{int(guild_member.created_at.timestamp())}:R>**\n서버 가입: **<t:{int(guild_member.joined_at.timestamp())}:R>**\n{len_log}\n────────────────────────────────")
+                    
+                    if len(message.attachments) != 0:
+                        if len(message.content) == 0:
+                            message.content = "**N/A**"
+                        return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
 
-                return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}")                
+                    return await channel.send(f"**[유저]** **{message.author.name}:** {message.content}")                
             else:
                 cur = await connect_db()
 

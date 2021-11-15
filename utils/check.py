@@ -43,8 +43,11 @@ async def check_channel(bot: discord.Client):
             true = bot.get_channel(id=channel_id[0])
 
             if true == None:
-                await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (channel_id[0],))
-                await log_pr(f"충돌 제거: ID - {channel_id[0]}")
+                if channel_id[0] == 1:
+                    pass
+                else:
+                    await cur.execute("DELETE FROM cloud_service WHERE Channel = ?", (channel_id[0],))
+                    await log_pr(f"충돌 제거: ID - {channel_id[0]}")
             else:
                 pass
         await asyncio.sleep(1)
