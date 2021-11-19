@@ -195,11 +195,11 @@ class message(commands.Cog):
                         if len(message.attachments) != 0:
                             if len(message.content) == 0:
                                 message.content = "**N/A**"
-                            await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
-                            await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                            await message.channel.send(f"**[{role_list[0]}]** **{message.author.display_name}:** {message.content}\n**링크:** {message.attachments[0].url}")
+                            await user.send(f"**[{role_list[0]}]** **{message.author.display_name}:** {message.content}\n**링크:** {message.attachments[0].url}")
 
-                        await message.channel.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
-                        await user.send(f"**[{role_list[0]}]** **{message.author.name}:** {message.content}")
+                        await message.channel.send(f"**[{role_list[0]}]** **{message.author.display_name}:** {message.content}")
+                        await user.send(f"**[{role_list[0]}]** **{message.author.display_name}:** {message.content}")
                     
 def setup(bot):
     bot.add_cog(message(bot))
