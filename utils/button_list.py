@@ -2,33 +2,6 @@ from discord_slash.utils.manage_components import create_button, create_actionro
 
 from discord_slash.model import ButtonStyle
 
-timeout_buttons = create_actionrow(
-    create_button(
-        style=ButtonStyle.green,
-        label="서버문의",
-        custom_id="server_category",
-        disabled=True
-    ),
-    create_button(
-        style=ButtonStyle.blue,
-        label="후원문의",
-        custom_id="support_category",
-        disabled=True
-    ),
-    create_button(
-        style=ButtonStyle.red,
-        label="신고하기",
-        custom_id="report_category",
-        disabled=True
-    ),
-    create_button(
-        style=ButtonStyle.gray,
-        label="취소하기",
-        custom_id="service_queue_cancel",
-        disabled=True
-    )
-)
-
 service_buttons_1 = create_actionrow(
     create_button(
         style=ButtonStyle.green,

@@ -49,14 +49,14 @@ class move(commands.Cog):
             select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
         except TimeoutError:
             try:
-                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=None, embed=None)
+                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=[], embed=None)
             except discord.errors.Notfound:
                 return
                 
         new_category = self.bot.get_channel(id=int(select_ctx.selected_options[0]))
 
         await ctx.channel.edit(category=new_category)
-        await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=None)
+        await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=[])
 
 def setup(bot):
     bot.add_cog(move(bot))

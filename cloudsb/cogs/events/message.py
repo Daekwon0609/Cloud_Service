@@ -66,7 +66,7 @@ class message(commands.Cog):
                 try:
                     ctx: ComponentContext = await wait_for_component(self.bot, components=service_buttons_1, timeout=60)
                 except TimeoutError:
-                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=[timeout_buttons], embed=None)
+                    await msg.edit(content="`제한 시간 안에 응답하지 않아 취소되었습니다!`", components=[], embed=None)
                     return await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (message.author.id,))
 
                 await cur.execute("SELECT Category FROM cloud_setup WHERE Type = ?", (ctx.component_id,))
@@ -100,7 +100,7 @@ class message(commands.Cog):
                 else:
                     suf_emb.add_field(name="문의 내용", value=message.content, inline=False)
        
-                await ctx.edit_origin(content=None, embed=suf_emb, components=None)
+                await ctx.edit_origin(content=None, embed=suf_emb, components=[])
                 await log_pr(f"문의 생성: 채널 - {channel.name} ({channel.id})")
 
                 len_log = "N/A"
