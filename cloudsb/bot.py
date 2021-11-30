@@ -35,4 +35,4 @@ def run(token: str):
     bot = Cloudsb(command_prefix="$", intents=discord.Intents.all())
     SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
     load_extensions(bot)
-    bot.run(token)
+    bot.run(token, reconnect=True)
