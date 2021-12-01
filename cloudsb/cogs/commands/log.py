@@ -83,7 +83,7 @@ class log(commands.Cog):
             select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_log], timeout=30)
         except TimeoutError:
             try:
-                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", components=[], embed=None)
+                return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소하였습니다.`", components=[], embed=None)
             except discord.errors.Notfound:
                 return
 

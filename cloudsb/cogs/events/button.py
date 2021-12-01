@@ -70,7 +70,7 @@ class button(commands.Cog):
                 select_ctx: ComponentContext = await wait_for_component(self.bot, components=[select_category], timeout=30)
             except TimeoutError:
                 try:
-                    return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소되었습니다.`", file=None, components=[], embed=None)
+                    return await msg.edit(content=f"{ctx.author.mention}, `제한 시간 안에 응답하지 않아 취소하였습니다.`", file=None, components=[], embed=None)
                 except discord.errors.Notfound:
                     return
 
