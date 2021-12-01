@@ -79,17 +79,17 @@ class button(commands.Cog):
             await ctx.channel.edit(category=new_category)
             await select_ctx.edit_origin(content=f"{ctx.author.mention}, `{new_category.name}`으로 이동하였습니다.", components=[])
         elif ctx.component_id == "cancel":
-            return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 작업이 취소되었습니다.`', file=None, components=[], embed=None)
+            return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 작업을 취소하였습니다.`', file=None, components=[], embed=None)
         elif ctx.component_id == "service_queue_cancel":
             cur = await connect_db()
             await cur.execute("SELECT User_id FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
             queue_cancel = await cur.fetchone()
 
             if queue_cancel == None:
-                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', file=None, components=[], embed=None)
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택을 취소하였습니다.`', file=None, components=[], embed=None)
             else:
                 await cur.execute("DELETE FROM cloud_service WHERE User_id = ?", (ctx.author.id,))
-                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택이 취소되었습니다.`', file=None, components=[], embed=None)
+                return await ctx.edit_origin(content=f'{ctx.author.mention}, `진행 중인 문의 선택을 취소하였습니다.`', file=None, components=[], embed=None)
         elif ctx.component_id == "report_category" or ctx.component_id == "support_category" or ctx.component_id == "server_category":
             cur = await connect_db()
 
