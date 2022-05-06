@@ -1,10 +1,10 @@
 import discord
 
-from discord_slash.utils.manage_commands import create_option, create_permission, create_choice
+from interactions.utils.manage_commands import create_option, create_permission, create_choice
 
-from discord_slash.model import SlashCommandPermissionType
+from interactions.model import SlashCommandPermissionType
 
-from discord_slash import cog_ext, SlashContext
+from interactions import cog_ext, SlashContext
 
 from utils.db import connect_db
 from utils.change import change_name, change_type
