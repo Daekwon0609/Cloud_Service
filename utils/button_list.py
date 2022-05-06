@@ -41,7 +41,7 @@ create_select_value = create_actionrow(
                 value="report_category"
             )
         ],
-        placeholder="생성할 카테고리 종류를 선택해주세요",
+        placeholder="생성할 카테고리 종류를 선택해 주세요",
         min_values=1,
         max_values=1,
     )
