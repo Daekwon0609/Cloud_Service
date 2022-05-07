@@ -3,9 +3,9 @@ import datetime
 
 from asyncio import TimeoutError
 
-from interactions.utils.manage_components import wait_for_component
+from discord_slash.utils.manage_components import wait_for_component
 
-from interactions.context import ComponentContext
+from discord_slash.context import ComponentContext
 
 from utils.db import connect_db
 from utils.change import change_name

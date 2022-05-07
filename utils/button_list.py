@@ -1,6 +1,6 @@
-from interactions.utils.manage_components import create_button, create_actionrow, create_select, create_select_option
+from discord_slash.utils.manage_components import create_button, create_actionrow, create_select, create_select_option
 
-from interactions.model import ButtonStyle
+from discord_slash.model import ButtonStyle
 
 service_buttons_1 = create_actionrow(
     create_button(

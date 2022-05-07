@@ -2,10 +2,10 @@ import discord
 import datetime
 import asyncio
 
-from interactions.utils.manage_components import wait_for_component, create_select, create_select_option, create_actionrow
+from discord_slash.utils.manage_components import wait_for_component, create_select, create_select_option, create_actionrow
 
-from interactions.context import ComponentContext
-from interactions import cog_ext, SlashContext
+from discord_slash.context import ComponentContext
+from discord_slash import cog_ext, SlashContext
 
 from utils.db import connect_db
 from utils.json import load_j

@@ -3,10 +3,10 @@ import discord
 
 from asyncio import TimeoutError
 
-from interactions.utils.manage_components import create_select, create_select_option, create_actionrow
-from interactions.utils.manage_components import wait_for_component
+from discord_slash.utils.manage_components import create_select, create_select_option, create_actionrow
+from discord_slash.utils.manage_components import wait_for_component
 
-from interactions.context import ComponentContext
+from discord_slash.context import ComponentContext
 from discord.ext import commands
 
 from utils.db import connect_db

@@ -1,21 +1,24 @@
 import asyncio
-import interactions
+
+from discord_slash import cog_ext, SlashContext
 
 from utils.json import load_j
 from utils.db import connect_db
 from utils.logging import Add_log
 from utils.system_log import log_pr
 
-class close(interactions.Extension):
-  def __init__(self, client):
-    self.client: interactions.Client = client
+from discord.ext import commands
 
-    @client.command(
+class close(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @cog_ext.cog_slash(
         name='종료',
         description="진행 중인 문의를 종료합니다.",
-        scope=[load_j['sub_guild']]
+        guild_ids=[load_j['sub_guild']]
     )
-    async def close(self, ctx: interactions.CommandContext):
+    async def close(self, ctx: SlashContext):
         cur = await connect_db()
 
         await cur.execute("SELECT Channel FROM cloud_service WHERE Channel = ?", (ctx.channel.id,))
@@ -58,5 +61,5 @@ class close(interactions.Extension):
             
             await user.send("`문의가 종료되었습니다.`")
 
-def setup(client):
-    close(client)
+def setup(bot):
+    bot.add_cog(close(bot))
